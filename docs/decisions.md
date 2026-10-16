@@ -215,3 +215,19 @@ become final.
   Accessibility prompt; menu and Settings show live status with System
   Settings deep links plus a Refresh button (Accessibility state can change
   while the app runs). Sound cue defaults **off** (FR-10).
+
+## Phase 3 (2026-10-17)
+
+- **[OWNER] Gate 2 passed.** Owner ran the manual matrix in
+  `docs/manual-test-log.md`: paste ✅ and clipboard restore ✅ in Notes,
+  Safari, Chrome, VS Code, Terminal, Messages/Telegram; FR-1…FR-10 all ✅
+  (FR-4 confirmed on retest). Two edge cases were unreachable by hand
+  because transcription finished "too fast" — both are covered by unit
+  tests (`pressWhileTranscribingIsIgnored`, `escapeCancelsRecording`).
+  Owner confirmed the hotkey set stays Right Option (default) + Right
+  Command.
+- **Signing note recorded at Gate 2:** the tested bundle was **ad-hoc
+  signed** (the "Pyaww Local" certificate was never created), but the
+  keychain holds a valid **Apple Development** identity. Any signature
+  change resets Microphone/Accessibility once; decision on switching is in
+  TODO.md.
