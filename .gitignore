@@ -3,6 +3,8 @@
 
 # Dev-time Python analysis venv (not app code)
 .venv/
+__pycache__/
+*.pyc
 
 # Build outputs
 build/
