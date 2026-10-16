@@ -59,7 +59,7 @@ the encoder only. This restores the SPEC §4 pipeline shape
 | Field | Value |
 | --- | --- |
 | Name | function output `[0]` (currently `var_2170`; always read it from the model description, never hardcode) |
-| Dtype | FLOAT32 returned by the runtime (weights/graph are fp16/fp32 mixed per `w16`) |
+| Dtype | **FLOAT16** in the model description: the native `MLModel` API returns a Float16 multiarray (Phase 1 finding; coremltools' Python `predict()` upcasts to FLOAT32, which is why Phase 0 recorded FLOAT32). Read by the declared data type. |
 | Shape | `[1, 751, 2566]` |
 | Meaning | `[batch, CTC frame, vocab]` unnormalized logits. **Decode only rows `[0, R)`** — `R` is derived from the real audio length, never from 751. |
 

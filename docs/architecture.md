@@ -43,6 +43,34 @@ The 30 s cap (I-9) shapes `Transcriber`'s validation rules (FR-5/FR-6), and
 `R = max(1, ((T_real+1)//2 + 1)//2)` from the real audio length gates both
 the mask construction and the logits slice.
 
+## As built (Phase 1)
+
+```
+Package.swift                    PyawwCore (library) + PyawwCLI (pyaww-cli), zero deps
+Sources/PyawwCore/
+  ModelConstants.swift           loads Models/*.json (mel filters, Hann, CMVN, vocab)
+  AudioIO.swift                  AudioLoader (AVAudioFile) + AudioResampler (AVAudioConverter)
+  FeatureExtractor.swift         fp32 log-mel + CMVN; 400-pt DFT as 2 vDSP mmul against
+                                 precomputed cos/sin tables; single mel mmul
+  ModelRunner.swift              fixed-30 s encoder; compile-once cache + self-heal
+  Tokenizer.swift, Decoder.swift  greedy CTC (argmax, collapse, drop blank 0)
+  TextPostProcessor.swift        v1: trim only
+  Transcriber.swift              end-to-end samples/URL -> text, 30 s + 0.5 s rules
+Sources/PyawwCLI/main.swift      pyaww-cli [--model-dir DIR] file... -> "name<TAB>text"
+Tests/PyawwCoreTests/            Swift Testing (CLT has no XCTest); stage tests vs
+                                 Tests/Fixtures/intermediates + 6-file end-to-end +
+                                 edge cases; model suites .serialized
+```
+
+First launch compiles the `.mlpackage` with `MLModel.compileModel` into
+`~/Library/Application Support/Pyaww/CompiledModels/` (no `coremlc` with
+Command Line Tools); later launches load the cache. The logits output
+`var_2170` is FLOAT16 — read it by its declared data type (model-spec.md §3).
+
+One-command Gate 1 check: `scripts/run-parity.sh` (build → transcribe the
+golden set with `pyaww-cli` → compare with `scripts/parity_swift.py` → CER
+summary + reports).
+
 ## Boundaries (protocols)
 
 - `Transcribing` — `transcribe(samples:) async throws -> String`
@@ -76,9 +104,15 @@ scripts/export_fe_constants.py  I-8 constants → Models/mel_filters.json, hann_
 scripts/export_fixtures.py      golden-WAV → expected/*.txt + intermediates
                                 (+ --verify-coreml parity report)
 scripts/cer.py                  reference output vs gold transcripts → cer_report.tsv
+scripts/parity_swift.py         Swift CLI outputs vs Python reference + CER → *_swift_report.tsv
+scripts/run-parity.sh           Gate 1 one-command parity (build → run → compare)
 scripts/make_golden_from_hf.py  deterministic golden-set builder (HF dataset)
 scripts/parity_check.py         legacy probe: original 2 s asset vs torch
 ```
+
+`myanmar_asr/` (the reference checkout the first three scripts import) was
+deleted after Gate 1; re-clone from `huggingface.co/freococo/myanmar_asr` to
+regenerate fixtures or the CoreML asset.
 
 Fixtures layout:
 
@@ -90,6 +124,8 @@ Tests/Fixtures/expected/        <stem>.txt Python reference outputs (101 files)
 Tests/Fixtures/intermediates/   per-stage tensors for 4 files
 Tests/Fixtures/parity_report.tsv  shipped asset vs reference, per clip
 Tests/Fixtures/cer_report.tsv     reference vs gold transcripts, per clip
+Tests/Fixtures/parity_swift_report.tsv  Swift vs reference (Gate 1 evidence)
+Tests/Fixtures/cer_swift_report.tsv     Swift vs gold transcripts
 ```
 
 Parity compares **Swift output vs Python reference output** (Gate 1), and

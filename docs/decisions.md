@@ -130,3 +130,34 @@ become final.
   JSON constants; keep the 91 MB checkpoint (`myanmar_asr/`, the owner's own
   nested repository) and the legacy 38 MB 2 s asset out of git
   (`.gitignore`). No LFS for now.
+
+## Phase 1 (2026-10-16)
+
+- **Swift tests use Swift Testing (`import Testing`), not XCTest.** This
+  machine has Command Line Tools only: XCTest is unavailable, while the
+  toolchain ships `Testing.framework` + its macro plugin. Command unchanged:
+  `swift test`. Suites that load the model are `.serialized` to keep the
+  8 GB machine calm.
+- **`var_2170` is FLOAT16 in the model description; the native `MLModel`
+  API returns it as Float16.** Phase 0 had recorded FLOAT32 because the
+  coremltools Python `predict()` upcasts. `ModelRunner` now reads the output
+  by its declared data type. (First test run produced 5.5e8 garbage diffs by
+  reinterpreting fp16 bytes as fp32 — fixed by the dtype-aware reader.)
+- **ModelRunner compile cache hardened.** Compile-once into
+  `~/Library/Application Support/Pyaww/CompiledModels` stays, plus: a
+  process-wide lock (parallel test suites raced to write the cache on the
+  first run and produced a half-written `.mlmodelc`) and self-healing — an
+  unloadable cache entry is deleted and recompiled once.
+- **Gate 1 parity policy: 100/100 exact; `g2063` stays allowlisted.**
+  `scripts/run-parity.sh` is the one command (build + golden-set run +
+  compare + CER). On the owner's machine the Swift path (`.all` compute
+  units) reproduced the reference text exactly on all 100 golden files —
+  including `g2063`, where the Phase 0 coremltools CPU check had flipped one
+  knife-edge frame. The allowlist entry remains as documented tolerance in
+  case another compute path flips it. Reports:
+  `Tests/Fixtures/parity_swift_report.tsv`, `Tests/Fixtures/cer_swift_report.tsv`.
+- **Python reference checkout removed after Gate 1 (owner-approved).**
+  `myanmar_asr/` (91 MB, gitignored) deleted; re-clone with
+  `git clone https://huggingface.co/freococo/myanmar_asr myanmar_asr` before
+  running `scripts/reconvert_coreml.py`, `scripts/export_fixtures.py`, or
+  `scripts/parity_check.py`. Swift no longer needs it for parity.
