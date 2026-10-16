@@ -1,0 +1,17 @@
+{
+  "source": "Tests/Fixtures/audio/g0003.wav",
+  "samples_full": 31536,
+  "num_frames": 50,
+  "enc_len": 50,
+  "token_ids": [
+    287,
+    1193,
+    506,
+    72,
+    1614,
+    872,
+    2,
+    2476
+  ],
+  "text": "ချမ်း ပါး စ ကော မား တွေ က အမ်"
+}

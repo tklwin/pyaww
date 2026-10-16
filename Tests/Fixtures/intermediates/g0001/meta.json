@@ -1,0 +1,16 @@
+{
+  "source": "Tests/Fixtures/audio/g0001.wav",
+  "samples_full": 19200,
+  "num_frames": 31,
+  "enc_len": 31,
+  "token_ids": [
+    238,
+    2087,
+    1709,
+    2,
+    1096,
+    1294,
+    843
+  ],
+  "text": "ခါ လေ မြို့ က နေ ပြီး တော့"
+}
