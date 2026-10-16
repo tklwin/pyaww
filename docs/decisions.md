@@ -59,8 +59,8 @@ become final.
   ground-truth transcripts; reference outputs are generated from the
   owner's Python pipeline by `scripts/export_fixtures.py`.
 
-- **[OWNER] Do not push to origin yet** — keep Phase-0 work local until
-  docs/model-spec.md is reviewed.
+- **[OWNER] Do not push to origin yet.** Model-spec reviewed and approved
+  2026-10-16; pushing still awaits the owner's explicit go-ahead.
 
 - **Encoder-only deployment split (2026-10-16).** The end-to-end fp16
   re-conversion is numerically unstable at long lengths (the fp16 STFT/mel
@@ -89,15 +89,15 @@ become final.
   smallest drift of the size-compliant variants; its one miss (g2063) is a
   frame with margin 0.0122 vs w16 diff 0.0119 → one token differs.
   `scripts/reconvert_coreml.py` defaults to w16; `--precision fp32`
-  regenerates the exact variant. **[OWNER] tolerance sign-off for g2063
-  pending** (SPEC §5.3 documented-tolerance clause).
+  regenerates the exact variant. **[OWNER, approved 2026-10-16]** — the
+  g2063 tolerance is accepted (SPEC §5.3 documented-tolerance clause).
 
 - **Constant format = JSON, not .bin/.npy (2026-10-16).** SPEC I-8 suggested
   raw `.bin`/`.npy`; the owner's existing `Models/cmvn.json` +
   `Models/vocab.json` set the convention, so `scripts/export_fe_constants.py`
   exports `mel_filters.json` (80×201) and `hann_window.json` (400) in JSON
-  too. Negligible parse cost, human-inspectable. **[OWNER] confirm** — if
-  .bin/.npy is preferred, it is a small exporter change.
+  too. Negligible parse cost, human-inspectable. **[OWNER, approved
+  2026-10-16]** — keep JSON.
 
 - **`Models/mel_filters.json` regenerated (2026-10-16).** The file in the
   repo was Slaney-normalized (`torchaudio norm='slaney'`), which does NOT
@@ -105,7 +105,7 @@ become final.
   use torchaudio defaults, `mel_scale='htk', norm=None`). Parity requires the
   reference matrix, so `mel_filters.json` is now the verified
   reference-correct one; the previous content is preserved as
-  `Models/mel_filters.slaney.json`. **[OWNER] FYI / confirm.**
+  `Models/mel_filters.slaney.json`. **[OWNER, confirmed 2026-10-16].**
 
 - **Fixtures schema (2026-10-16).** `Tests/Fixtures/expected/*.txt` = Python
   reference output for 101 files (example.mp3 + 100 golden WAVs);
@@ -120,3 +120,13 @@ become final.
   findings live in this log + model-spec.md. Kept:
   `reconvert_coreml.py`, `export_fe_constants.py`, `export_fixtures.py`,
   `cer.py`, `parity_check.py` (legacy 2 s asset probe), `make_golden_from_hf.py`.
+
+- **[OWNER, approved 2026-10-16] Gate 0 closed.** `docs/model-spec.md`
+  approved as-is; all pending decision items above resolved; Phase 1 may
+  start.
+
+- **[OWNER, approved 2026-10-16] Model-file git tracking.** Commit the
+  deployment asset `Models/BurmeseASR-Encoder-30s.mlpackage` (39.4 MB) + the
+  JSON constants; keep the 91 MB checkpoint (`myanmar_asr/`, the owner's own
+  nested repository) and the legacy 38 MB 2 s asset out of git
+  (`.gitignore`). No LFS for now.

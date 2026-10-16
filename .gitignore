@@ -14,7 +14,11 @@ DerivedData/
 *.xcresult
 xcuserdata/
 
-# Large owner-owned binaries stay out of git until the owner decides
-# how to store them (the repo working tree is the source of truth;
-# docs/model-spec.md documents these exact paths).
+# Model files (owner decision 2026-10-16, docs/decisions.md):
+# the deployment asset (Models/BurmeseASR-Encoder-30s.mlpackage) and the
+# JSON constants ARE tracked. The 91 MB checkpoint lives in myanmar_asr/
+# (the owner's own nested repository) and the legacy 38 MB 2 s asset stays
+# out of git.
+myanmar_asr/
+Models/BurmeseASR.mlpackage/
 Models/**/*.mlmodelc

@@ -26,6 +26,11 @@ Source of truth for the ASR asset used by Pyaww. Everything here is
 The owner's checkpoint is untouched (guardrail #1): the conversion reads it
 plus the owner's own `model.py` / `transcribe.py`.
 
+Git tracking (owner decision 2026-10-16): `Models/BurmeseASR-Encoder-30s.mlpackage`
+and the JSON constants are committed; the legacy `Models/BurmeseASR.mlpackage` /
+`.mlmodelc` and `myanmar_asr/` (the owner's own nested repository, including
+the 91 MB checkpoint) stay out of git.
+
 ## 2. Why encoder-only
 
 The first attempt — one end-to-end Core ML model with raw audio input
@@ -155,8 +160,8 @@ flipped frames the fp32 reference's top-1/top-2 margin is 0.012–0.118
 
 `w16` is the default because it (a) meets the 60 MB bundle target at
 39.4 MB, (b) has the smallest measured drift of the size-compliant variants,
-(c) reaches 100/101 exact text. **The g2063 tolerance needs owner sign-off**
-(SPEC §5.3 allows a documented, owner-approved tolerance). The exact
+(c) reaches 100/101 exact text. **The g2063 tolerance is owner-approved
+(2026-10-16) and documented** (SPEC §5.3 tolerance clause). The exact
 alternative is `scripts/reconvert_coreml.py --precision fp32` (77.8 MB,
 near-exact, but violates the bundle target). Per-clip results for the
 shipped asset: `Tests/Fixtures/parity_report.tsv`.
