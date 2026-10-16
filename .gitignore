@@ -9,6 +9,7 @@ __pycache__/
 # Build outputs
 build/
 .build/
+.build-release/
 dist/
 DerivedData/
 *.xcresult
