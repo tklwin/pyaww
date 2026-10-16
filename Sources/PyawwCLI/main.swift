@@ -4,7 +4,7 @@ import PyawwCore
 /// pyaww-cli — Phase 1 parity harness: `pyaww-cli file.wav` prints text.
 @main
 struct PyawwCLI {
-    static func main() {
+    static func main() async {
         var modelDirectory = URL(fileURLWithPath: "Models", isDirectory: true)
         var files: [String] = []
         let arguments = Array(CommandLine.arguments.dropFirst())
@@ -41,7 +41,7 @@ struct PyawwCLI {
         for file in files {
             let url = URL(fileURLWithPath: file)
             do {
-                let text = try transcriber.transcribe(audioFileURL: url)
+                let text = try await transcriber.transcribe(audioFileURL: url)
                 print("\(url.lastPathComponent)\t\(text)")
             } catch {
                 FileHandle.standardError.write(Data("error: \(url.lastPathComponent): \(error)\n".utf8))

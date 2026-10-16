@@ -6,7 +6,10 @@ import Foundation
 /// AudioResampler (16 kHz mono) -> FeatureExtractor -> fixed-30 s padding and
 /// mask contract -> ModelRunner -> greedy CTC -> trim.
 /// Input/output contract: docs/model-spec.md §3–§5.
-public final class Transcriber {
+///
+/// An actor: callers get the async `Transcribing` interface and the heavy
+/// work never runs on the main thread (SPEC §6.6).
+public actor Transcriber: Transcribing {
     public enum TranscribeError: Error, CustomStringConvertible {
         case audioTooLong(samples: Int)
         case modelMissing(String)
@@ -48,12 +51,12 @@ public final class Transcriber {
     }
 
     /// Transcribes an audio file (any AVFoundation-readable format).
-    public func transcribe(audioFileURL: URL) throws -> String {
-        try transcribe(samples: AudioLoader.load16kMono(url: audioFileURL))
+    public func transcribe(audioFileURL: URL) async throws -> String {
+        try await transcribe(samples: AudioLoader.load16kMono(url: audioFileURL))
     }
 
     /// Transcribes 16 kHz mono Float32 samples.
-    public func transcribe(samples: [Float]) throws -> String {
+    public func transcribe(samples: [Float]) async throws -> String {
         guard samples.count >= Self.minSamples else { return "" }
         guard samples.count <= Self.maxSamples else {
             throw TranscribeError.audioTooLong(samples: samples.count)
