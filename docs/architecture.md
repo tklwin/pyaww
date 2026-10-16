@@ -73,19 +73,26 @@ summary + reports).
 
 ## Boundaries (protocols)
 
-- `Transcribing` — `transcribe(samples:) async throws -> String`
-- `AudioRecording` — mic capture, so tests can supply synthetic audio
-- `TextInserting` — paste insertion, so tests can fake insertion
+- `Transcribing` — `transcribe(samples:) async throws -> String` (Sendable)
+- `AudioRecording` — `startRecording()`, `stopRecording() async`,
+  `cancelRecording()`; mic capture, so tests can supply synthetic audio
+- `TextInserting` — `insert(_:restoreClipboard:) async -> InsertionOutcome`;
+  paste insertion, so tests can fake insertion
 
 The app shell must never touch Core ML directly: only `PyawwCore`.
 
 ## Concurrency model
 
 - Menu bar UI on `@MainActor`.
-- Recording/ML/decoding off the main thread (Swift concurrency, actors).
+- Recording/ML/decoding off the main thread: `Transcriber` is an **actor**;
+  the model loads in a detached task (+1 s silence warm-up) so launch never
+  blocks the UI; recording stop resamples in a detached task; the audio tap
+  only appends to a preallocated, lock-protected buffer.
 - Explicit state machine in `AppState`: `idle → recording → transcribing
-  → idle`, `error` recoverable; rapid hotkey behavior defined in Phase 2.
-- Esc cancels recording; app quit cancels in-flight work.
+  → idle`, `error` recoverable; a press while busy is ignored (as-built),
+  max duration auto-stops with a notice.
+- Esc cancels recording synchronously (`cancelRecording` discards samples)
+  and abandons in-flight transcription; app quit ends everything.
 
 ## Privacy posture
 
@@ -130,3 +137,29 @@ Tests/Fixtures/cer_swift_report.tsv     Swift vs gold transcripts
 
 Parity compares **Swift output vs Python reference output** (Gate 1), and
 CER compares both to the owner's ground-truth transcripts (§5.3).
+
+## App shell (Phase 2, as-built)
+
+```
+App/
+  PyawwApp.swift           @main + MenuBarExtra/Settings scenes + AppModel (composition root)
+  AppState.swift           state machine: idle/recording/transcribing/error (+ notice)
+  AudioRecorder.swift      AVAudioEngine tap → preallocated buffer → 16 kHz mono on stop
+  HotkeyManager.swift      NSEvent global+local monitors; PushToTalkKey (Right Option default)
+  TextInserter.swift       pasteboard snapshot → ⌘V CGEvent → restore; secure-input aware
+  PermissionsManager.swift mic + Accessibility status, prompts, System Settings deep links
+  SettingsStore.swift      UserDefaults settings (+ SMAppService launch-at-login)
+  MenuBarView.swift        menu content + state icon (FR-8)
+  SettingsView.swift       settings form (FR-10)
+  Info.plist               LSUIElement, com.tklwin.pyaww, microphone usage string
+```
+
+- Bundle assembled by `scripts/make-app.sh` (no Xcode on this machine):
+  release binary + `Resources/Models/` (mlpackage + JSON constants) + plist,
+  signed with "Pyaww Local" if the certificate exists, else ad-hoc.
+- No SwiftUI property-wrapper macros are available in the CLT toolchain
+  (`SwiftUIMacros` plugin absent); the app uses Observation (`@Observable`,
+  `@Bindable`) and plain properties — SwiftUI tracks observable reads in
+  `body` directly.
+- `AppState` is protocol-driven (`AudioRecording`, `Transcribing`,
+  `TextInserting`) and covered by `Tests/PyawwAppTests` with fakes.

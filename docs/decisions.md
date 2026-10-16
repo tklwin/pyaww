@@ -161,3 +161,57 @@ become final.
   `git clone https://huggingface.co/freococo/myanmar_asr myanmar_asr` before
   running `scripts/reconvert_coreml.py`, `scripts/export_fixtures.py`, or
   `scripts/parity_check.py`. Swift no longer needs it for parity.
+
+## Phase 2 (2026-10-17)
+
+- **[OWNER] Phase 2 kickoff decisions.** Default hotkey: **Right Option**.
+  Signing: create a local self-signed **"Pyaww Local"** code-signing
+  certificate (one-time guide in `docs/build.md`) so Microphone/Accessibility
+  grants survive rebuilds. Phase 1 pushed to `origin/main` (approved).
+- **App = SPM executable target `App/` + hand-assembled bundle**
+  (`scripts/make-app.sh`): this machine has Command Line Tools only (no
+  `xcodebuild`). The script builds release, copies `App/Info.plist`
+  (`LSUIElement`, `com.tklwin.pyaww`, mic usage string) and the tracked
+  `Models/` resources (mlpackage + 4 JSON constants), then signs with
+  "Pyaww Local" when present, else ad-hoc with a warning. Bundle ≈ 38 MB
+  (budget 60 MB). No sandbox, no entitlements file, hardened runtime off.
+- **No SwiftUI property-wrapper macros.** The CLT toolchain ships
+  `libObservationMacros` but not `SwiftUIMacros`, so `@State`/`@Environment`
+  cannot compile here. The app keeps SPEC §4's SwiftUI `MenuBarExtra` design
+  but uses plain stored properties + Observation (`@Observable`,
+  `@Bindable`); SwiftUI's observation tracking re-renders the menu bar.
+- **Hotkey = NSEvent global + local monitors** (`flagsChanged` for Right
+  Option / Right Command, `keyDown` for Esc). SPEC §6.5's "simplest reliable"
+  option; a `CGEventTap` would need the same Accessibility permission with
+  more machinery. Input Monitoring is not required.
+- **Insertion (SPEC §6.5, FR-3/FR-7)**: snapshot **all** pasteboard items
+  and types → set the transcript → synthetic ⌘V (`CGEvent`) → restore the
+  snapshot 0.4 s later, only if the user has not copied something else
+  (`changeCount` check). Without Accessibility, or under secure input, the
+  transcript stays on the clipboard and the menu shows a reason — text is
+  never lost.
+- **State machine behaviors (SPEC §6.6, covered by tests):** a press while
+  recording/transcribing is **ignored** (nothing queued); Esc cancels a
+  recording synchronously (`cancelRecording` discards samples) and abandons
+  an in-flight transcription (paste skipped at the cancellation check; the
+  Core ML `predict` itself cannot be interrupted); at the maximum duration
+  the recorder stops itself, transcribes what was captured, and shows a 6 s
+  notice. Silent clips (peak < 1e-4, ≈ −80 dBFS) are dropped before
+  inference (FR-5).
+- **`Transcriber` is now an actor** implementing `Transcribing` (SPEC §4's
+  single async function). The app loads it in a detached task and runs a
+  1 s-silence warm-up inference (SPEC §6.1); hotkey presses before ready get
+  a clear "still loading" error instead of a silent no-op.
+- **Boundary protocols (SPEC §4)**: `Transcribing` (Sendable, async),
+  `@MainActor AudioRecording` (`startRecording` / async `stopRecording` /
+  sync `cancelRecording`), `@MainActor TextInserting`
+  (`insert(_:restoreClipboard:) -> InsertionOutcome`). Fakes + 9 app-state
+  tests live in `PyawwAppTests`; `swift test` = 11 core + 9 app tests.
+- **Recorder choices (SPEC §6.2)**: capture at the hardware format into a
+  preallocated buffer — the audio thread only appends (`OSAllocatedUnfairLock`
+  around a bounded memcpy; no allocation in the steady path) — then downmix
+  to mono and resample to 16 kHz once, off the main thread, on stop.
+- **First-run guidance (FR-9)**: microphone prompt at first launch, then the
+  Accessibility prompt; menu and Settings show live status with System
+  Settings deep links plus a Refresh button (Accessibility state can change
+  while the app runs). Sound cue defaults **off** (FR-10).

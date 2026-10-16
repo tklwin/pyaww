@@ -1,0 +1,83 @@
+# Building and running Pyaww
+
+## Commands
+
+| Artifact | Command | Notes |
+| --- | --- | --- |
+| Tests | `swift test` | 20 tests: 11 core (`PyawwCoreTests`) + 9 app state (`PyawwAppTests`) |
+| CLI (WAV in, text out) | `swift build && .build/debug/pyaww-cli --model-dir Models clip.wav` | any AVFoundation-readable file, 0.5–30 s |
+| Menu bar app | `./scripts/make-app.sh` | release build → `build/Pyaww.app`, signed |
+| Gate 1 parity | `scripts/run-parity.sh` | one command: build, golden-set run, compare, CER |
+
+## One-time: "Pyaww Local" signing certificate
+
+macOS ties Microphone/Accessibility (TCC) grants to the code signature.
+Rebuilding with a *different* signature makes macOS ask again. Create the
+local certificate once, **before granting permissions**:
+
+1. Open **Keychain Access** (Applications → Utilities).
+2. Menu **Keychain Access → Certificate Assistant → Create a Certificate…**
+3. Fill in:
+   - **Name:** `Pyaww Local`
+   - **Identity Type:** _Self Signed Root_
+   - **Certificate Type:** _Code Signing_
+4. Click **Create**, then **Done**.
+5. Verify: `security find-identity -v -p codesigning | grep "Pyaww Local"`
+
+`scripts/make-app.sh` signs with this identity when it exists; otherwise it
+falls back to ad-hoc signing and warns (permissions reset on every rebuild
+in that mode).
+
+## Running
+
+```
+./scripts/make-app.sh
+open build/Pyaww.app
+```
+
+First launch prompts:
+
+1. **Microphone** — macOS asks; click Allow.
+2. **Accessibility** — open System Settings → Privacy & Security →
+   Accessibility and enable Pyaww. (The menu bar menu has buttons with the
+   right deep links for both.)
+
+Usage: **hold Right Option**, speak, release — the text is pasted at the
+cursor. **Esc** cancels. The menu shows status, permission help,
+Settings…, and Quit.
+
+## Bundle layout
+
+```
+build/Pyaww.app/Contents/
+  MacOS/PyawwApp           release binary
+  Resources/Models/        BurmeseASR-Encoder-30s.mlpackage + 4 JSON constants (~38 MB)
+  Info.plist               LSUIElement, com.tklwin.pyaww, microphone usage string
+```
+
+- No entitlements file, **no App Sandbox** (SPEC §6.8: required for the
+  synthetic paste). Hardened runtime: off (local builds).
+- First launch compiles the model into
+  `~/Library/Application Support/Pyaww/CompiledModels`; safe to delete
+  (it rebuilds on next launch).
+
+## Why there is no Xcode project
+
+This machine has Command Line Tools only: no `xcodebuild`, no Core ML
+compiler, and no `SwiftUIMacros` plugin. Therefore:
+
+- the app is an SPM executable target (`App/`) and the bundle is assembled
+  by `scripts/make-app.sh`;
+- the model compiles on first launch via `MLModel.compileModel`;
+- the app avoids SwiftUI property-wrapper macros (`@State`, …) and uses
+  Observation (`@Observable`/`@Bindable`) — SwiftUI tracks observable reads
+  in `body` directly.
+
+## Development notes
+
+- Logs: `log stream --predicate 'subsystem == "com.tklwin.pyaww"'`
+  (transcripts and audio are never logged).
+- Release builds use their own scratch directory (`.build-release/`):
+  mixing a release build into `.build` breaks Swift Testing's macro-plugin
+  resolution for later `swift test` runs on this CLT toolchain. If `.build`
+  gets wedged anyway, `swift package clean` resets it.
