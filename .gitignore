@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Dev-time Python analysis venv (not app code)
+.venv/
+
+# Build outputs
+build/
+.build/
+dist/
+DerivedData/
+*.xcresult
+xcuserdata/
+
+# Large owner-owned binaries stay out of git until the owner decides
+# how to store them (the repo working tree is the source of truth;
+# docs/model-spec.md documents these exact paths).
+Models/**/*.mlmodelc
