@@ -29,13 +29,94 @@ become final.
   `.cpuAndNeuralEngine` 3.6 ms median, `.all` 5.8 ms, `.cpuOnly` 4.3 ms,
   `.cpuAndGPU` 38.5 ms for a 2 s real-speech clip. Final decision belongs to
   Phase 3 with the real Swift runner; GPU is already ruled out as slowest.
-- **Naming of probe scripts:** `scripts/inspect_coreml.py`,
-  `scripts/dump_mlprogram.py`, `scripts/parity_check.py`,
-  `scripts/export_fixtures.py`. They are AI/agent analysis tools, not app
-  code, and are excluded from any app bundle.
+- **Probe scripts live in `scripts/`, not the app.** Analysis tools are
+  AI/agent tooling, not app code, and are excluded from any app bundle.
+  *(2026-10-16: consolidated — `inspect_coreml.py`/`dump_mlprogram.py` were
+  folded into the surviving scripts and deleted; see the cleanup entry below.)*
 - **First-launch model compile fallback required** — confirmed `xcrun
   coremlc` is unavailable with Command Line Tools only (spec's
   `MLModel.compileModel` + Application Support cache plan stands).
 - **[OWNER] Signing identity for stable local builds** is not yet decided
   (free Apple Development certificate vs self-signed). Record here once
   chosen, before Phase 4 — changing it resets TCC permissions.
+
+- **[OWNER, approved 2026-10-16] Bundle ID = `com.tklwin.pyaww`.** Set once
+  in Phase 2 (app target + Info.plist) and never changed afterwards.
+
+- **[OWNER, approved 2026-10-16] Audio input re-conversion to 30 s.**
+  The shipped asset's fixed 2 s input is too short for dictation. I will
+  re-export from the owner's untouched checkpoint using their own
+  architecture code + conversion recipe (coremltools), producing
+  `Models/BurmeseASR-30s.mlpackage`. The original 2 s asset stays on disk
+  untouched as provenance/reference. *(Superseded 2026-10-16: the end-to-end
+  30 s fp16 asset was withdrawn as numerically unstable; final asset is
+  `Models/BurmeseASR-Encoder-30s.mlpackage` — see the encoder-only entry
+  below.)*
+
+- **[OWNER, approved 2026-10-16] Golden test set source =
+  chuuhtetnaing/myanmar-speech-dataset-for-asr** (HuggingFace). Select a
+  representative subset (≥50 clips, varied durations/conditions) with
+  ground-truth transcripts; reference outputs are generated from the
+  owner's Python pipeline by `scripts/export_fixtures.py`.
+
+- **[OWNER] Do not push to origin yet** — keep Phase-0 work local until
+  docs/model-spec.md is reviewed.
+
+- **Encoder-only deployment split (2026-10-16).** The end-to-end fp16
+  re-conversion is numerically unstable at long lengths (the fp16 STFT/mel
+  chain overflows to `inf` beyond ~10 s; 244,938 `inf` values measured; fp32
+  end-to-end is 95 MB > 60 MB bundle target). The front-end has no learned
+  weights, so Swift computes features (fp32, I-8 constants) and Core ML hosts
+  the encoder with a fixed 3001-frame mel input
+  (`Models/BurmeseASR-Encoder-30s.mlpackage`, 39.4 MB). Restores the SPEC §4
+  pipeline (AudioResampler → FeatureExtractor → ModelRunner). Details:
+  model-spec.md §2.
+
+- **Mask contract for the fixed 30 s input (2026-10-16).** The `frame_bias`
+  and `conv1_bias` model inputs reproduce the reference's variable-length
+  computation exactly on valid rows: attention-key masking past `R`, conv1
+  row zeroing past `l1` (even-`T_real` edge case), and conformer-conv GLU
+  zeroing past `R` (the 31-tap depthwise-conv boundary). Without them, pad
+  rows leak into valid rows and short clips lose trailing tokens. fp32 sanity:
+  `max|diff| <= 4.6e-05` vs the unpadded reference on 12 probe clips.
+  Contract: model-spec.md §3.
+
+- **Shipped precision = `w16` (fp16 linear/conv weights, fp32 activations),
+  39.4 MB (2026-10-16).** Measured vs the fp32 reference on 101 files:
+  fp16 93/101 exact, attn32 100/101, attn32ln 100/101, w16 100/101,
+  fp32 101/101 (77.8 MB). All mismatches are single-frame knife-edge flips
+  (fp32 top-1/top-2 margin 0.012–0.118 at the flipped frames). w16 has the
+  smallest drift of the size-compliant variants; its one miss (g2063) is a
+  frame with margin 0.0122 vs w16 diff 0.0119 → one token differs.
+  `scripts/reconvert_coreml.py` defaults to w16; `--precision fp32`
+  regenerates the exact variant. **[OWNER] tolerance sign-off for g2063
+  pending** (SPEC §5.3 documented-tolerance clause).
+
+- **Constant format = JSON, not .bin/.npy (2026-10-16).** SPEC I-8 suggested
+  raw `.bin`/`.npy`; the owner's existing `Models/cmvn.json` +
+  `Models/vocab.json` set the convention, so `scripts/export_fe_constants.py`
+  exports `mel_filters.json` (80×201) and `hann_window.json` (400) in JSON
+  too. Negligible parse cost, human-inspectable. **[OWNER] confirm** — if
+  .bin/.npy is preferred, it is a small exporter change.
+
+- **`Models/mel_filters.json` regenerated (2026-10-16).** The file in the
+  repo was Slaney-normalized (`torchaudio norm='slaney'`), which does NOT
+  match the reference pipeline (`transcribe.py` + `preprocessor_config.json`
+  use torchaudio defaults, `mel_scale='htk', norm=None`). Parity requires the
+  reference matrix, so `mel_filters.json` is now the verified
+  reference-correct one; the previous content is preserved as
+  `Models/mel_filters.slaney.json`. **[OWNER] FYI / confirm.**
+
+- **Fixtures schema (2026-10-16).** `Tests/Fixtures/expected/*.txt` = Python
+  reference output for 101 files (example.mp3 + 100 golden WAVs);
+  `Tests/Fixtures/intermediates/` (4 files: example, g0001–g0003) now holds
+  `samples_full.npy`, `mel_cmvn_full.npy`, `mel_cmvn_padded.npy`,
+  `frame_bias.npy`, `conv1_bias.npy`, `logits_full.npy`, `meta.json` (the
+  2 s-era `samples_padded.npy` was dropped). `parity_report.tsv` (shipped
+  asset vs reference per clip) and `cer_report.tsv` live alongside.
+
+- **Debug scripts deleted (2026-10-16).** `debug_*`, `dump_*`,
+  `inspect_coreml.py`, `bisect_convert.py`, `length_sweep.py` removed; their
+  findings live in this log + model-spec.md. Kept:
+  `reconvert_coreml.py`, `export_fe_constants.py`, `export_fixtures.py`,
+  `cer.py`, `parity_check.py` (legacy 2 s asset probe), `make_golden_from_hf.py`.

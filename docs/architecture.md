@@ -15,26 +15,33 @@ decisions and changes that inspection revealed.
 - **Pyaww app** — SwiftUI `MenuBarExtra` shell: recorder, hotkey, text
   inserter, permissions, settings, state machine.
 
-## Data flow (v1, with the current end-to-end Core ML asset)
+## Data flow (v1)
 
 ```
 mic (any format) → AudioRecorder (AVAudioEngine tap)
   → 16 kHz mono Float32 samples                       [AudioResampler]
-  → ModelRunner (CoreML: audio[1,32000] → logits[1,51,2566])   ← USB of truth: specs in docs/model-spec.md
-  → Decoder (greedy CTC: argmax, collapse repeats, drop blank)
+  → log-mel + CMVN, fp32, I-8 constants               [FeatureExtractor]
+  → zero-pad features to 3001 + build masks (R from real length)
+  → ModelRunner (CoreML encoder: mel+masks → logits[1,751,2566])
+  → slice rows [0,R) → Decoder (greedy CTC)
   → Tokenizer (id → Burmese syllable, space-joined)
   → TextPostProcessor (v1: trim only)
   → TextInserter (pasteboard + synthetic ⌘V, clipboard restored)
 ```
 
-**Important:** the deployed Core ML asset has the STFT/Mel/CMVN front-end
-*inside the graph* (fp16). Unlike the generic plan in SPEC.md §4, the Swift
-side does **not** implement the log-mel feature extraction for this
-asset — there is no `FeatureExtractor` stage in the v1 pipeline above
-(kept as a contingency only; see `decisions.md`). The spec's
-`AudioResampler` → 16 kHz mono Float32 stage is still required (input
-`audio` is fixed-shape 16 kHz mono), and the model's exact 2.00 s cap
-shapes `Transcriber`'s validation rules (FR-5/FR-6).
+The deployed Core ML asset is **encoder-only**: the STFT/Mel/CMVN front-end
+has no learned weights and runs in Swift in fp32 (`FeatureExtractor`), so the
+SPEC §4 pipeline shape is kept exactly. The encoder takes a fixed 30 s mel
+input (`Models/BurmeseASR-Encoder-30s.mlpackage`) plus two mask inputs that
+reproduce the Python reference's variable-length computation — contract and
+rationale in `docs/model-spec.md` §2–§3. This replaces the earlier plan of
+baking the front-end into the graph: the fp16 end-to-end conversion was
+numerically unstable beyond ~10 s, and the fp32 variant exceeded the 60 MB
+bundle target (see `decisions.md`).
+
+The 30 s cap (I-9) shapes `Transcriber`'s validation rules (FR-5/FR-6), and
+`R = max(1, ((T_real+1)//2 + 1)//2)` from the real audio length gates both
+the mask construction and the logits slice.
 
 ## Boundaries (protocols)
 
@@ -62,20 +69,28 @@ The app shell must never touch Core ML directly: only `PyawwCore`.
 ## Dev-time analysis tooling (not app code)
 
 ```
-.venv/                     Python 3.11 (uv) — parity/fixtures tooling
-scripts/inspect_coreml.py  dump mlpackage I/O spec → model-spec.md
-scripts/dump_mlprogram.py  dump mlProgram ops histogram
-scripts/parity_check.py    torch reference vs CoreML on example.mp3
-scripts/export_fixtures.py golden-WAV → expected/*.txt + intermediates
+.venv/                          Python 3.11 (uv) — parity/fixtures tooling
+scripts/reconvert_coreml.py     checkpoint → Models/BurmeseASR-Encoder-30s.mlpackage
+                                (+ fp32 sanity checks vs the reference)
+scripts/export_fe_constants.py  I-8 constants → Models/mel_filters.json, hann_window.json
+scripts/export_fixtures.py      golden-WAV → expected/*.txt + intermediates
+                                (+ --verify-coreml parity report)
+scripts/cer.py                  reference output vs gold transcripts → cer_report.tsv
+scripts/make_golden_from_hf.py  deterministic golden-set builder (HF dataset)
+scripts/parity_check.py         legacy probe: original 2 s asset vs torch
 ```
 
-Fixtures layout when golden WAVs arrive (I-7):
+Fixtures layout:
 
 ```
-Tests/Fixtures/audio/       WAVs (16 kHz mono)
-Tests/Fixtures/expected/    <stem>.txt reference outputs (Python, full audio)
-Tests/Fixtures/intermediates/  per-stage tensors for 3-5 files
+Tests/Fixtures/audio/           100 golden WAVs (16 kHz mono, 33 MB)
+Tests/Fixtures/manifest.tsv     provenance: source row, duration, held-out flag
+Tests/Fixtures/transcripts/     gold transcripts (HF dataset text)
+Tests/Fixtures/expected/        <stem>.txt Python reference outputs (101 files)
+Tests/Fixtures/intermediates/   per-stage tensors for 4 files
+Tests/Fixtures/parity_report.tsv  shipped asset vs reference, per clip
+Tests/Fixtures/cer_report.tsv     reference vs gold transcripts, per clip
 ```
 
 Parity compares **Swift output vs Python reference output** (Gate 1), and
-SER/CER compares both to the owner's ground-truth transcripts (§5.3).
+CER compares both to the owner's ground-truth transcripts (§5.3).
