@@ -430,15 +430,36 @@ become final.
   icons on the arrow line. Testing note: this Mac caches per-volume view
   state, so re-mounting the same image for checks shows stale geometry —
   verify with a freshly built image (new volume UUID).
-- **Icon rendering in System Settings (open, 2026-10-17).** The owner
-  noticed our icon shows a light plate with inset artwork in the
-  microphone permission list, while OpenWhispr/Raycast/Recordly fill
-  their tile. Cause: their icons are full-canvas artwork; ours follows
-  the Apple icon grid (~80 % content, transparent margin) from the Icon
-  Composer Default export — invisible against the DMG's azure background
-  ("full" in Finder) but visible on neutral system backgrounds. Options:
-  keep Apple's proportions, or re-bake `Resources/AppIcon.icns`
-  edge-to-edge. Owner decides.
+- **Icon rendering: diagnosed; owner keeps the full-bleed badge
+  (2026-10-17, resolved).** Owner noticed the icon looks "not filled"
+  with a light plate in the microphone permission list while
+  OpenWhispr/Raycast/Recordly fill their slot; he also said the Icon
+  Composer export should be full-bleed — re-measuring proved him right
+  (and the previous note wrong): `Resources/AppIcon.icns` carries 100 %
+  full-bleed art at every rep (from Icon Composer's "iOS Default"
+  export), while every comparison app ships classic Mac canvas
+  proportions (OpenWhispr 80 %, Recordly 81 %, Raycast 81–83 %,
+  Portal 86–88 %). macOS 26 has two icon worlds: the new surfaces
+  (Spotlight/launcher) render our art full size, matching Apple's new
+  full-bleed icons (measured: our 122 px = Podcasts' 122 px), while the
+  legacy renderer (Settings privacy lists) treats full-bleed art as
+  iOS-style and re-seats it — art shrunk to ~70 % (28 px inside the
+  40 px slot) on the default light Mac tile, which is the "border".
+  Recordly (same icns-only setup with inset art) renders clean directly
+  above us, isolating the cause to the full-bleed shape. **Owner
+  decision: keep full-bleed** (big and native in the new UI; the
+  Settings plate is accepted). The fully-modern fix (icon bundle/asset
+  catalog) needs Xcode's icon compiler — no Xcode on this Mac.
+- **DMG background: azure -> dark ink (owner request, 2026-10-17).**
+  With the full-bleed blue badge the azure installer field read
+  blue-on-blue ("color cannot distinguish and don't support each
+  other"). `scripts/make-dmg-background.swift` now draws the badge's
+  own top-left -> bottom-right diagonal in near-black navy
+  (#161F38 -> #06080F) plus a soft azure radial glow (alpha 0.20,
+  radius 110) behind the app icon slot so the badge pops and looks lit
+  from its own field. White title/arrow/instructions unchanged.
+  Verified on a fresh mount: chrome, content and the Finder status bar
+  read as one dark surface with the blue icon as the brightest element.
 - **[OWNER] Versioning confirmed; release kit landed (2026-10-17).** Owner
   approved the proposal ("yes proceed"): first public release **v0.1.0**
   ("pyaww v0.1.0 (beta)"), Keep-a-Changelog + SemVer,

@@ -112,8 +112,11 @@ AppleScript `set bounds` can lose a race with Finder, so the shipped
 window had opened 920×464 (white bands right of/below the 600×400
 background, icons ~45 pt under the arrow line). `scripts/make-dmg.sh`
 now normalizes the saved `.DS_Store` after styling (window exactly
-600×400, item row on the arrow line). `~/Downloads/Pyaww-0.1.0-arm64.dmg`
-was refreshed (quarantined again); the flow is unchanged, so the ticks
-above stay valid — re-open the new image only to see the polish.
+600×400, item row on the arrow line). Then, on the owner's request, the
+background went from azure to **dark ink navy** (with a soft azure glow
+behind the app icon) so the full-bleed blue badge reads clearly instead
+of blue-on-blue. `~/Downloads/Pyaww-0.1.0-arm64.dmg` was refreshed
+(quarantined again); the flow is unchanged, so the ticks above stay
+valid — re-open the new image only to see the polish.
 `dist/Pyaww-0.1.0-arm64.dmg` sha256
-`1fff3372637d7be7314f406dd5399d6b6b1b55e07a8b0422ef0f3117dd1eaaad`.
+`775a5a6b2971b4668675e4060f5d103a0c78956bfa01ba99d22fe9926a662302`.

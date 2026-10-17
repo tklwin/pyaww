@@ -53,13 +53,16 @@ lists live in the phase reports, not here.
   GitHub Releases + README "Open Anyway" steps + `xattr` fallback; no
   Apple Developer Program, no brew, no CI (`gh release create` locally).
   Versioning confirmed: first release `v0.1.0` ("pyaww v0.1.0 (beta)").
-  Gate 4 rehearsal green (log ticked) and the installer window fixed.
+  Gate 4 rehearsal green (log ticked); the installer window fixed and
+  the field re-tinted dark ink so the full-bleed badge pops.
   Next: the publish go-ahead (`git push origin main`, tag, release).
   SPEC Phase 5 notarization/CI stay optional.
-- **Icon fill: question open (2026-10-17).** In System Settings lists our
-  icon shows the Apple-grid transparent margin as a light plate (their
-  reference apps ship full-canvas artwork). Owner to choose: keep the
-  Apple proportions or re-bake `Resources/AppIcon.icns` edge-to-edge.
+- **Icon fill: decided (2026-10-17).** Measured truth: our icns is
+  100 % full-bleed (Icon Composer's iOS export) while the reference apps
+  ship classic ~80–88 % canvases; the Settings plate is the legacy
+  renderer re-seating full-bleed art. **Owner: keep full-bleed** — the
+  DMG background instead went dark ink (+ azure glow) so the blue badge
+  pops.
 
 ## Phase 4
 

@@ -1,6 +1,8 @@
-// Renders the DMG window background: the badge's azure field as the same
-// top-left -> bottom-right diagonal, the title, an arrow between the app
-// and Applications icon spots, and the one instruction that matters.
+// Renders the DMG window background: a dark ink field in the badge's own
+// top-left -> bottom-right diagonal with a soft azure glow behind the app
+// icon slot, the title, an arrow between the app and Applications icon
+// spots, and the one instruction that matters. Dark field on purpose: the
+// full-bleed blue badge needs the contrast (owner note 2026-10-17).
 // The two icons themselves are placed by Finder on top of this image.
 // Usage: swift scripts/make-dmg-background.swift <output.png>
 import AppKit
@@ -26,13 +28,22 @@ ctx.cgContext.scaleBy(x: scale, y: scale) // draw in points, output at 2×
 
 let full = NSRect(x: 0, y: 0, width: widthPt, height: heightPt)
 
-// The icon's C4 field: same two blues, same diagonal direction.
-func brandBlue(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) -> NSColor {
-    NSColor(srgbRed: r / 255, green: g / 255, blue: b / 255, alpha: 1)
+// The badge's own diagonal, dropped to near-black navy so the full-bleed
+// blue icon (and the blue Applications folder) pop off the field.
+func srgb(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) -> NSColor {
+    NSColor(srgbRed: r / 255, green: g / 255, blue: b / 255, alpha: a)
 }
-if let gradient = NSGradient(starting: brandBlue(0x4D, 0xA6, 0xF4),
-                             ending: brandBlue(0x14, 0x61, 0xE0)) {
+if let gradient = NSGradient(starting: srgb(0x16, 0x1F, 0x38),
+                             ending: srgb(0x06, 0x08, 0x0F)) {
     gradient.draw(in: full, angle: -45)
+}
+
+// Soft azure glow behind the app icon slot (Finder places the icon at
+// x=150, y=200) so the badge looks lit from its own field.
+if let glow = NSGradient(colors: [srgb(0x4D, 0xA6, 0xF4, 0.20),
+                                  srgb(0x4D, 0xA6, 0xF4, 0.0)]) {
+    let center = NSPoint(x: 150, y: 200)
+    glow.draw(fromCenter: center, radius: 0, toCenter: center, radius: 110, options: [])
 }
 
 func draw(_ text: String, size: CGFloat, weight: NSFont.Weight, alpha: CGFloat, y: CGFloat) {
