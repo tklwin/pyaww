@@ -34,6 +34,21 @@ lists live in the phase reports, not here.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
 
+## Parking lot (awaiting owner decision)
+
+- **Word-segmentation post-processing (`mmdt-tokenizer`, MIT).** Evaluated
+  2026-10-17 in a temp venv (Python package stays out of the repo): rule-based
+  grammar pipeline, no statistical model; ~1.1k lines + one 162 KB lexicon
+  JSON → Swift-portable. Measured on our 99 word-spaced gold clips (boundary
+  F1 vs human gold): model raw output 0.27 → `mmdt(despace(model))` 0.33
+  (64 clips better / 31 worse / 4 equal); intrinsic ceiling vs this gold
+  ≈ 0.43. 0/100 clips had any non-space character changed; ~0.4–0.8 ms per
+  clip. Caveats: needs a Burmese-only de-space step first (lexicon matching
+  cannot cross spaces); upstream drops `၊` when present and space-separates
+  `။` (both fixable in a port; today's model output contains neither).
+  SPEC hook already exists: `TextPostProcessor.swift` ("owner specifies
+  rules"). Awaiting owner: goal, style preference, go/no-go.
+
 ## Agent / engineering
 
 - **Phase 3:** measurements complete (SPEC §5.2 targets, compute-unit
