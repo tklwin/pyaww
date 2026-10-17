@@ -152,6 +152,9 @@ frame:
 | ⏻ Quit (restyled final button) | app exits cleanly | pending owner click on the final build |
 | Hold past 30 s (owner's intentional test) | limit notice; the captured audio transcribes and pastes | tap-slop bug fixed, regression test added; owner re-test pending |
 
-Known follow-ups before publishing: rebuild the DMG from this build (the
-rehearsal image predates the popover), and re-check the Gate 4
-UI-wording row ("menu names match the README") against the rebuilt image.
+Follow-ups before publishing: the DMG was **rebuilt from this build** —
+`dist/Pyaww-0.1.0-arm64.dmg` sha256
+`b568127c45060392c08685d9e4e3bd23bf0cc22e374128e1f4cfd3359f526c01`
+(the rehearsal image predates the popover) — and the Gate 4 UI-wording row
+("menu names match the README") still wants a quick re-check against the
+rebuilt image before the publish go-ahead.
