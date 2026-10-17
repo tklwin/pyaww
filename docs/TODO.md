@@ -33,12 +33,13 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon direction pick (2026-10-17):** owner asked for fresh directions
-  after v1; four lab themes drawn in `Design/Pyaww-Icon-Lab.vectorcraft`
-  (sheet: `Design/lab-v1.png`): **A** voice ribbon, **B** sound arcs,
-  **C** jade bars + gold, **D** lacquer & gold ပ. Pick 1–2 → refine →
-  per-layer SVG export → owner finishes in Icon Composer → wire into app
-  (replaces the interim `./scripts/make-icon.sh` icns).
+- **Icon — direction A (voice ribbon) chosen (2026-10-17):** owner picked
+  the voice-ribbon concept; six A-lab studies drawn in
+  `Design/Pyaww-Icon-A-Lab.vectorcraft` (sheet: `Design/A-lab-v1.png`):
+  A2 refined sine, A3 brush taper, A4 echo, A5 beads, A6 ink & dot,
+  A7 flow-into-words. Pick favourite(s) → refine → per-layer SVG export
+  (full 1024 canvas, text outlined) → owner finishes in Icon Composer →
+  wire into app (replaces the interim `./scripts/make-icon.sh` icns).
 
 ## Phase 4
 
