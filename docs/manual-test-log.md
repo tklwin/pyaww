@@ -149,12 +149,21 @@ frame:
 | Header shape | Status / notice / error keep the same two-line height; nothing truncates |✅ "it is ok now" |
 | Model card | "Speech model — Myanmar Conformer"; no segmentation row while healthy |✅ |
 | Footer | Version, GitHub link, ⏻ Quit |✅ |
-| ⏻ Quit (restyled final button) | app exits cleanly | pending owner click on the final build |
-| Hold past 30 s (owner's intentional test) | limit notice; the captured audio transcribes and pastes | tap-slop bug fixed, regression test added; owner re-test pending |
+| ⏻ Quit (restyled final button) | app exits cleanly |✅ owner click-through |
+| Hold past 30 s (owner's intentional test) | limit notice; the captured audio transcribes and pastes | tap-slop fix + regression test landed; live re-run optional |
 
-Follow-ups before publishing: the DMG was **rebuilt from this build** —
-`dist/Pyaww-0.1.0-arm64.dmg` sha256
-`b568127c45060392c08685d9e4e3bd23bf0cc22e374128e1f4cfd3359f526c01`
-(the rehearsal image predates the popover) — and the Gate 4 UI-wording row
-("menu names match the README") still wants a quick re-check against the
-rebuilt image before the publish go-ahead.
+**Gate 4 re-check — rebuilt image (owner session, 2026-10-18).** A fresh
+quarantined copy of the rebuilt DMG (`0081;…;Safari;`; Gatekeeper verified
+`rejected` beforehand; dev instance quit) was staged in `~/Downloads`:
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| Open the rebuilt DMG → "Install this app?" → **Install** | app lands in `~/Applications` |✅ |
+| First launch | Gatekeeper block → *Open Anyway* → Open |✅ |
+| Click the wave | panel matches the README wording (centred, rounded, ⏻ Quit, GitHub link) |✅ |
+| One dictation | text pastes (permission grants carried over) |✅ |
+| ⏻ Quit | app exits cleanly |✅ |
+
+Owner verdict: "everything fine". Published: `dist/Pyaww-0.1.0-arm64.dmg`
+sha256 `b568127c45060392c08685d9e4e3bd23bf0cc22e374128e1f4cfd3359f526c01`
+ships as the v0.1.0 release asset.

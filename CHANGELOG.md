@@ -6,7 +6,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-10-17
+## [0.1.0] - 2026-10-18
 
 First public beta: hold a modifier key, speak Myanmar, release — the text
 is pasted into the app you're using. Everything runs on your Mac.
@@ -21,12 +21,20 @@ is pasted into the app you're using. Everything runs on your Mac.
   on by default, switchable off to paste the raw model text)
 - Menu-bar wave: follows the menu bar appearance when idle, red while
   recording
-- Settings window: hotkey, minimum/maximum recording durations, word
-  segmentation, clipboard restore, sound cue, launch at login, and
-  permission status
+- One panel behind the menu-bar wave: permission status, the hotkey,
+  minimum/maximum recording durations, word segmentation, clipboard
+  restore, sound cue, launch at login, model status, Quit, and a
+  GitHub link
 - Clipboard-safe pasting: the previous clipboard contents are restored
   afterwards (on by default)
 - App and DMG build scripts (`scripts/make-app.sh`, `scripts/make-dmg.sh`
   with a styled installer window); no third-party runtime dependencies
 - MIT license with third-party attributions (ASR model Apache-2.0 by
   freococo; segmentation rules MIT by Myanmar Data Tech)
+
+### Fixed
+
+- A recording that ran to the 30 s limit could fail to transcribe
+  instead of using the captured audio (the tap's final buffer pushed
+  the capture past the model's fixed window); it is now clipped to the
+  window
