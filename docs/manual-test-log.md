@@ -83,3 +83,25 @@ launch the rebuilt `build/Pyaww.app`:
 | Put another app in front, then menu → *Settings…* | Settings window appears **in front** immediately |✅ |
 | Switch to another app, then menu → *Settings…* again | window comes back to the front |✅ |
 | Menu → Quit | app exits cleanly |✅ |
+
+## Gate 4 rehearsal — clean install from the README alone (owner)
+
+Follow `README.md` → *Install* as if you were a new user ("the real download
+journey"). The "download" is pre-staged at
+`~/Downloads/Pyaww-0.1.0-arm64.dmg`, quarantined exactly like a Safari
+download; Gatekeeper was verified beforehand to report `rejected`
+(`origin=Apple Development…`), so the block dialog is guaranteed to appear.
+The dev instance was quit and both permission grants were reset
+(`tccutil reset Microphone/Accessibility com.tklwin.pyaww`) for genuine
+first-run prompts.
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| Open the DMG in `~/Downloads` | "Install this app?" dialog → **Install** (or drag to Applications) | |
+| First launch of the installed app | Gatekeeper block ("Apple could not verify …") | |
+| System Settings → Privacy & Security → **Open Anyway** → confirm | Pyaww launches; menu bar wave appears | |
+| First dictation attempt | Microphone prompt → **Allow** | |
+| Menu → *Grant Accessibility Access…* | System Settings opens; enable Pyaww, return to Pyaww | |
+| Hold Right Option, say a short phrase, release | Text pastes at the cursor | |
+| Menu bar while recording | Wave turns red; white again when idle | |
+| README wording check | dialog texts / paths / menu names match the README | |
