@@ -51,11 +51,11 @@ and tick:
 
 | Step | Expected | ✅ / notes |
 | --- | --- | --- |
-| First launch | Microphone prompt appears → **Allow** | |
-| Then | Accessibility prompt → **Open System Settings** → enable Pyaww | |
-| Menu bar | Menu shows both permissions green (use *Refresh Permission Status* after granting) | |
-| One dictation | Hold Right Option, say a short phrase, release → text pastes at the cursor | |
-| Menu → Quit | app exits cleanly | |
+| First launch | Microphone prompt appears → **Allow** |✅ |
+| Then | Accessibility prompt → **Open System Settings** → enable Pyaww |✅ |
+| Menu bar | Menu shows both permissions green (use *Refresh Permission Status* after granting) |✅ |
+| One dictation | Hold Right Option, say a short phrase, release → text pastes at the cursor |✅ |
+| Menu → Quit | app exits cleanly |✅ |
 
 ## Phase 4 re-verify — word segmentation (owner)
 
@@ -65,8 +65,8 @@ the app bundle, so there are no new permissions. Launch `build/Pyaww.app`:
 
 | Step | Expected | ✅ / notes |
 | --- | --- | --- |
-| One dictation | Text pastes as words, e.g. "မင်္ဂလာ ပါ" (not "မင်္ဂ လာ ပါ") | |
-| Settings → Pasting → toggle off | Next dictation pastes the raw model text (syllable spacing) | |
-| Toggle back on | Word text again | |
-| Settings → Model | "Word segmentation: Ready" | |
-| Menu → Quit | app exits cleanly | |
+| One dictation | Text pastes as words, e.g. "မင်္ဂလာ ပါ" (not "မင်္ဂ လာ ပါ") |✅ |
+| Settings → Pasting → toggle off | Next dictation pastes the raw model text (syllable spacing) |✅ |
+| Toggle back on | Word text again |✅ |
+| Settings → Model | "Word segmentation: Ready" |✅ |
+| Menu → Quit | app exits cleanly |✅ |

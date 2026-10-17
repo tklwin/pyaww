@@ -246,6 +246,12 @@ become final.
   `phys_footprint` (77–88 MB idle; target < 150 MB met). Strict RSS is
   175–187 MB (shared framework pages included) — owner confirms the
   reading when approving Gate 3.
+- **[OWNER] Gate 3 passed (2026-10-17).** Owner reviewed
+  `docs/performance.md` with "resident memory" = Activity Monitor footprint
+  (77–88 MB idle; strict RSS 175–187 MB noted) and ticked the Phase 3
+  re-verify table in `docs/manual-test-log.md`: microphone + Accessibility
+  grants after the signing switch, menu bar green, one dictation pasted,
+  clean quit.
 
 ## Phase 4 (approved additions, 2026-10-17)
 
@@ -284,3 +290,16 @@ become final.
   `--segment-text STRING`. Measured (release): init 19.3 ms once, longest
   corpus text 3.8 ms — `docs/performance.md`. `swift test` = 17 core + 12
   app tests.
+- **[OWNER] Word segmentation verified in-app (2026-10-17).** Owner ticked
+  the Phase 4 table in `docs/manual-test-log.md`: word text pastes
+  ("မင်္ဂလာ ပါ" style), toggle off = raw syllable text, toggle on again,
+  Settings → Model shows "Ready".
+- **Settings window now comes to the front (2026-10-17, owner report).**
+  As an accessory app (`LSUIElement`) Pyaww is not activated by menu bar
+  clicks, so SwiftUI's `SettingsLink` created the Settings window *behind*
+  the frontmost app — the window was open but only reachable via Mission
+  Control. The menu item is now a Button that activates the app
+  (`NSApp.activate()`), sends `showSettingsWindow:`, then orders the
+  Settings window front explicitly.
+- **Push approved + done (2026-10-17):** `e0398b4`, `9e972e8` and the
+  Gate 3 / Settings-window commits are on `origin/main`.

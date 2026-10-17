@@ -5,6 +5,10 @@ lists live in the phase reports, not here.
 
 ## Recently closed (recorded in docs/decisions.md)
 
+- ✅ **Gate 3 (2026-10-17):** owner reviewed `docs/performance.md`
+  (resident memory = Activity Monitor footprint, 77–88 MB idle) and ticked
+  the Phase 3 re-verify table; the Phase 4 word-segmentation table is ticked
+  too (word text vs raw toggle verified in-app). Push approved and done.
 - ✅ **Gate 2 (2026-10-17):** owner manual matrix green — paste + clipboard
   restore in Notes/Safari/Chrome/VS Code/Terminal/Messages/Telegram; FR-1…10
   ✅. Log: `docs/manual-test-log.md`.
@@ -21,42 +25,27 @@ lists live in the phase reports, not here.
 
 ## Owner action
 
-- **Phase 4 word-segmentation check:** the rebuilt `build/Pyaww.app` now
-  segments dictation by default. Dictate once (expect word text like
-  "မင်္ဂလာ ပါ"), flip Settings → Pasting → "Segment Myanmar words" off and
-  compare (raw syllable text), then tick the "Phase 4 re-verify" table in
-  `docs/manual-test-log.md`.
-- **One-time permission re-grant (signing switch):** the rebuilt app is now
-  signed with the Apple Development certificate, so macOS asks once more.
-  Launch `build/Pyaww.app` and work through the "Phase 3 re-verify" table in
-  `docs/manual-test-log.md` (microphone → Accessibility → one dictation).
-- **Gate 3 approval:** review the numbers in `docs/performance.md`
-  (proposal: "resident memory" = Activity Monitor footprint, 77–88 MB idle;
-  strict RSS is 175–187 MB). Say "Gate 3 passed" once you agree.
-- **Push:** Phase 2 + Phase 3 commits are local only — say the word to
-  `git push origin main`.
 - **Name check for "Pyaww"** (GitHub / web / trademark search) before Phase 4.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
+- **Settings window fix re-test:** the menu item now brings Settings to the
+  front; the rebuilt `build/Pyaww.app` has it (open menu → Settings… —
+  the window should appear immediately in front).
 
 ## Phase 4
 
-- **Word segmentation — implemented (2026-10-17, awaiting owner check).**
+- **Word segmentation — implemented + owner-verified (2026-10-17).**
   Swift port of `mmdt-tokenizer` 0.1.3 (MIT) with the approved adaptations;
   209/209 Python reference vectors exact; Settings toggle (default on);
   applied after transcription before the paste; `pyaww-cli --segment` /
   `--segment-text` for inspection (CLI default stays raw). Evidence:
   `docs/decisions.md` (Phase 4), `docs/performance.md` (cost).
-  Owner check: dictate once with the toggle on, flip it off and compare
-  (`docs/manual-test-log.md` → Phase 4 re-verify).
 
 ## Agent / engineering
 
-- **Phase 3:** measurements complete (SPEC §5.2 targets, compute-unit
-  benchmark, 100/300-iteration soaks, memory-trend check, `sample`
-  profiling; memory-growth bug found and fixed). Evidence:
-  `docs/performance.md`. Awaiting owner Gate 3.
-- Phase 3+: keep `docs/manual-test-log.md` updated for later re-runs.
+- **Phase 3:** closed — owner Gate 3 passed 2026-10-17 (measurements in
+  `docs/performance.md`; re-verify table ticked). Keep
+  `docs/manual-test-log.md` updated for later re-runs.
 - Dev note: `myanmar_asr/` (Python reference checkout) was deleted after
   Gate 1, owner-approved. Re-clone
   `git clone https://huggingface.co/freococo/myanmar_asr myanmar_asr`
