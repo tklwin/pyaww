@@ -28,9 +28,10 @@ lists live in the phase reports, not here.
 - **Name check for "Pyaww"** (GitHub / web / trademark search) before Phase 4.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
-- **Settings window fix re-test:** the menu item now brings Settings to the
-  front; the rebuilt `build/Pyaww.app` has it (open menu → Settings… —
-  the window should appear immediately in front).
+- **Settings window re-test (final fix):** quit any running Pyaww first,
+  launch the rebuilt `build/Pyaww.app`, then menu → *Settings…* with
+  another app in front — the window should come to the front immediately
+  (see the new section in `docs/manual-test-log.md`).
 
 ## Phase 4
 

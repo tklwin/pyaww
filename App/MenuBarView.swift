@@ -5,6 +5,7 @@ import PyawwCore
 /// Menu bar menu content (FR-1, FR-8, FR-9).
 struct MenuBarView: View {
     let model: AppModel
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         Group {
@@ -37,7 +38,7 @@ struct MenuBarView: View {
             }
             Divider()
             Button("Settings…") {
-                openSettingsWindow()
+                showSettings()
             }
             Button("Quit Pyaww") {
                 NSApp.terminate(nil)
@@ -48,23 +49,15 @@ struct MenuBarView: View {
         }
     }
 
-    /// Opens the SwiftUI Settings window and brings it to the front.
+    /// Opens the Settings window in front of other apps (FR-10).
     ///
-    /// Pyaww is an accessory app (`LSUIElement`), so clicking a menu bar
-    /// item does not activate it: SwiftUI's `SettingsLink` created the
-    /// window *behind* the frontmost app — findable only via Mission
-    /// Control. Activate first, open the window, then order it front as a
-    /// belt (activation raises the key window, which need not be this one).
-    private func openSettingsWindow() {
-        NSApp.activate()
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        Task { @MainActor in
-            let settingsWindow = NSApp.windows.first { window in
-                window.identifier?.rawValue.contains("Settings") == true
-                    || window.title.contains("Settings")
-            }
-            settingsWindow?.makeKeyAndOrderFront(nil)
-        }
+    /// Activate first — menu bar clicks do not activate an accessory app —
+    /// then open the window via the public `openSettings` action and order
+    /// it front (details and probe evidence in `SettingsWindow`).
+    private func showSettings() {
+        SettingsWindow.activateApp()
+        openSettings()
+        SettingsWindow.raiseWhenReady()
     }
 }
 

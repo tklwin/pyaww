@@ -8,9 +8,10 @@ import PyawwCore
 /// Pyaww — menu bar Myanmar dictation (SPEC §4). No Dock icon (LSUIElement).
 ///
 /// Note: this machine has Command Line Tools only, whose toolchain does not
-/// ship `SwiftUIMacros`; the app therefore avoids SwiftUI property-wrapper
-/// macros (`@State`, `@Environment`, …) and uses Observation (`@Observable`,
-/// `@Bindable`) instead — SwiftUI tracks observable reads in `body` directly.
+/// ship `SwiftUIMacros`, so macro-based wrappers (`@State`, `@Entry`, …)
+/// cannot compile; the app uses Observation (`@Observable`, `@Bindable`)
+/// instead. Plain (non-macro) wrappers such as `@Environment` are fine —
+/// `@Environment(\.openSettings)` opens the Settings window (`MenuBarView`).
 @main
 struct PyawwApp: App {
     private let model = AppModel()

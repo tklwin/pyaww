@@ -70,6 +70,11 @@ struct SettingsView: View {
         .frame(width: 460, height: 520)
         .onAppear {
             model.permissions.refresh()
+            // Belt for the accessory-app quirk: if the window still opens
+            // behind other apps, activate and raise it (what the menu item
+            // does too — see `SettingsWindow`).
+            SettingsWindow.activateApp()
+            SettingsWindow.raiseWhenReady()
         }
     }
 

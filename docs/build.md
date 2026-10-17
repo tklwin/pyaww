@@ -77,9 +77,11 @@ compiler, and no `SwiftUIMacros` plugin. Therefore:
 - the app is an SPM executable target (`App/`) and the bundle is assembled
   by `scripts/make-app.sh`;
 - the model compiles on first launch via `MLModel.compileModel`;
-- the app avoids SwiftUI property-wrapper macros (`@State`, …) and uses
-  Observation (`@Observable`/`@Bindable`) — SwiftUI tracks observable reads
-  in `body` directly.
+- the app avoids SwiftUI property-wrapper *macros* (`@State`, `@Entry`, …:
+  `plugin for module 'SwiftUIMacros' not found`) and uses Observation
+  (`@Observable`/`@Bindable`) — SwiftUI tracks observable reads in `body`
+  directly; plain property wrappers such as `@Environment` compile fine
+  (used for `\.openSettings`).
 
 ## Development notes
 
@@ -88,10 +90,16 @@ compiler, and no `SwiftUIMacros` plugin. Therefore:
 - Release builds use their own scratch directory (`.build-release/`):
   mixing a release build into `.build` breaks Swift Testing's macro-plugin
   resolution for later `swift test` runs on this CLT toolchain.
-- **"plugin for module 'TestingMacros' not found" after edits:** the Swift
-  Build engine reuses an on-disk build description
-  (`.build/out/Intermediates.noindex/XCBuildData`) that can lack the Swift
-  Testing plugin flags. `scripts/test.sh` deletes the cached plan
-  (`.build/manifest.pif` + `XCBuildData`) before running, which re-plans
-  correctly and stays incremental (~5 s of plan + rebuild, then the tests).
-  If `.build` gets wedged despite that, `swift package clean` resets it.
+- **"plugin for module 'TestingMacros' not found":** Swift Build's plan no
+  longer passes the resolved `TestingMacros` plugin
+  (`-load-resolved-plugin`), because the dylib lives in the `testing/`
+  subdirectory of the toolchain plugin directory
+  (`…/usr/lib/swift/host/plugins/testing/`), which the plan generator does
+  not scan (observed 2026-10-17 — the old plan-cache workaround alone is no
+  longer enough). `scripts/test.sh` deletes the cached plan (`.build/`
+  `manifest.pif` + `XCBuildData`) **and** passes the plugin directories
+  explicitly (`-Xswiftc -plugin-path …/host/plugins` and
+  `…/host/plugins/testing`), derived from `xcrun --find swiftc`. Resolution
+  at compiler level verified with a bare `swiftc -typecheck` of an
+  `import Testing` file. If `.build` gets wedged despite both, `swift
+  package clean` resets it.

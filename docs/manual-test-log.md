@@ -70,3 +70,16 @@ the app bundle, so there are no new permissions. Launch `build/Pyaww.app`:
 | Toggle back on | Word text again |✅ |
 | Settings → Model | "Word segmentation: Ready" |✅ |
 | Menu → Quit | app exits cleanly |✅ |
+
+## Settings window re-verify — final fix (owner)
+
+Accessory apps are not activated by menu bar clicks, so the Settings window
+used to open *behind* the frontmost app. The final fix (2026-10-17) activates
+Pyaww and raises the window explicitly. Quit any running Pyaww first, then
+launch the rebuilt `build/Pyaww.app`:
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| Put another app in front, then menu → *Settings…* | Settings window appears **in front** immediately | |
+| Switch to another app, then menu → *Settings…* again | window comes back to the front | |
+| Menu → Quit | app exits cleanly | |

@@ -294,12 +294,19 @@ become final.
   the Phase 4 table in `docs/manual-test-log.md`: word text pastes
   ("မင်္ဂလာ ပါ" style), toggle off = raw syllable text, toggle on again,
   Settings → Model shows "Ready".
-- **Settings window now comes to the front (2026-10-17, owner report).**
+- **Settings window comes to the front — final (2026-10-17, owner reports).**
   As an accessory app (`LSUIElement`) Pyaww is not activated by menu bar
-  clicks, so SwiftUI's `SettingsLink` created the Settings window *behind*
-  the frontmost app — the window was open but only reachable via Mission
-  Control. The menu item is now a Button that activates the app
-  (`NSApp.activate()`), sends `showSettingsWindow:`, then orders the
-  Settings window front explicitly.
+  clicks, so the Settings window opened behind the frontmost app (owner:
+  findable only via Mission Control). Probing macOS 27.0.1 with a scratch
+  `LSUIElement` app showed: the private `showSettingsWindow:` selector is
+  answered but no longer creates the window (an intermediate fix using it
+  alone opened nothing — owner report #2); the public `openSettings` action
+  creates the window (`com_apple_SwiftUI_Settings_window`) without
+  activating the app; cooperative activation (`NSApp.activate()`,
+  `NSRunningApplication.activate(options:)`) is a no-op for an accessory
+  app; only `activate(ignoringOtherApps:)` (deprecated but functional)
+  activates it, after which the window becomes key. Final wiring:
+  `SettingsWindow.activateApp()` → `openSettings()` → bounded retry raising
+  the window; a belt repeats this in `SettingsView.onAppear`.
 - **Push approved + done (2026-10-17):** `e0398b4`, `9e972e8` and the
   Gate 3 / Settings-window commits are on `origin/main`.
