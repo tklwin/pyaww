@@ -23,3 +23,8 @@ xcuserdata/
 myanmar_asr/
 Models/BurmeseASR.mlpackage/
 Models/**/*.mlmodelc
+
+# Apple Design Resources (owner download 2026-10-17, for the Icon Composer
+# workflow): Apple's license does not permit redistribution, so the icon
+# template download stays local-only.
+Design/apple-icon-template/

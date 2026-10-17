@@ -1,0 +1,31 @@
+{
+  "features" : [
+    "refractivity"
+  ],
+  "fill" : "system-light",
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "image-name" : "2.ribbon.svg",
+          "name" : "Ribbon",
+          "opacity" : 1
+        }
+      ]
+    },
+    {
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "image-name" : "1.background.svg",
+          "name" : "Background",
+          "opacity" : 1
+        }
+      ]
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

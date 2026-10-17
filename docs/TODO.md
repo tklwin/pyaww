@@ -33,13 +33,17 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon — direction A (voice ribbon) chosen (2026-10-17):** owner picked
-  the voice-ribbon concept; six A-lab studies drawn in
-  `Design/Pyaww-Icon-A-Lab.vectorcraft` (sheet: `Design/A-lab-v1.png`):
-  A2 refined sine, A3 brush taper, A4 echo, A5 beads, A6 ink & dot,
-  A7 flow-into-words. Pick favourite(s) → refine → per-layer SVG export
-  (full 1024 canvas, text outlined) → owner finishes in Icon Composer →
-  wire into app (replaces the interim `./scripts/make-icon.sh` icns).
+- **Icon — final direction confirmed: "A" voice ribbon (2026-10-17):**
+  owner kept A (cream + coral→violet ribbon); the six A-lab studies were
+  not adopted (kept in git as exploration history). Final art re-created
+  clean in `Design/Pyaww-Icon-Final.vectorcraft`; per-layer full-canvas
+  SVGs in `Design/icon-assets/`; a ready-to-open Icon Composer package in
+  `Design/Pyaww.icon/` (ribbon front, background behind, modeled on
+  Apple's demo `icon.json` format). Next: owner tunes glass/appearances
+  in Icon Composer → export PNG(s) → bake into `Resources/AppIcon.icns`
+  (replaces the interim `./scripts/make-icon.sh` icns). The Apple icon
+  template download stays local-only (`.gitignore`; Apple's Design
+  Resources license bars redistribution).
 
 ## Phase 4
 
