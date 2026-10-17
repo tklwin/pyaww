@@ -405,3 +405,22 @@ become final.
   notarization. No CI: releases published locally with `gh release create`.
   Versioning proposal (first release `v0.1.0`, keep-a-changelog, DMG
   `Pyaww-0.1.0-arm64.dmg`) awaits owner confirmation.
+- **[OWNER] Versioning confirmed; release kit landed (2026-10-17).** Owner
+  approved the proposal ("yes proceed"): first public release **v0.1.0**
+  ("pyaww v0.1.0 (beta)"), Keep-a-Changelog + SemVer,
+  `Pyaww-0.1.0-arm64.dmg`. `scripts/make-dmg.sh` (hdiutil plus a
+  vorssaint-derived Finder-window layout with retries and a cleanup trap)
+  and `scripts/make-dmg-background.swift` (the badge's azure diagonal,
+  600×400 pt rendered at 2×) produce the styled installer — verified by
+  mounting: the volume carries the signed app, the `/Applications`
+  symlink and a saved `.DS_Store` layout; 37 MB. `README.md` (install,
+  permissions, usage, privacy, build, troubleshooting, uninstall) and
+  `CHANGELOG.md` written. **Discovery (macOS 26):** opening a well-formed
+  DMG now triggers the system's **"Install this app?"** one-click dialog
+  (installs into the user's `~/Applications`, and offers to trash the
+  download and eject); the README documents both that flow and classic
+  drag-to-Applications. Remaining before publishing: the owner's
+  clean-install rehearsal from the README alone (Gate 4) — Gatekeeper
+  *Open Anyway* journey with a quarantined copy, fresh permission prompts
+  (`tccutil reset` for that run), first transcription — then the publish
+  go-ahead (`git push` + `gh release create v0.1.0`).

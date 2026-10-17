@@ -103,3 +103,23 @@ compiler, and no `SwiftUIMacros` plugin. Therefore:
   at compiler level verified with a bare `swiftc -typecheck` of an
   `import Testing` file. If `.build` gets wedged despite both, `swift
   package clean` resets it.
+
+## Releasing
+
+The version lives in `App/Info.plist` (`CFBundleShortVersionString`,
+`CFBundleVersion`). Bump it, add the `CHANGELOG.md` entry, then:
+
+```sh
+./scripts/test.sh
+./scripts/make-app.sh
+./scripts/make-dmg.sh        # → dist/Pyaww-<version>-arm64.dmg
+git tag v<version>
+git push origin main v<version>
+gh release create v<version> dist/Pyaww-<version>-arm64.dmg \
+    --title "pyaww v<version>" --notes-file <release notes>
+```
+
+Release notes are the matching `CHANGELOG.md` section plus the short
+install blurb. Distribution is intentionally not notarized (free project,
+no Apple Developer Program subscription) — `README.md`'s install section
+is the user-facing side of that decision.

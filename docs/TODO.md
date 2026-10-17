@@ -43,8 +43,9 @@ lists live in the phase reports, not here.
 - **Distribution: route chosen — free "Moji-style" (2026-10-17).** DMG on
   GitHub Releases + README "Open Anyway" steps + `xattr` fallback; no
   Apple Developer Program, no brew, no CI (`gh release create` locally).
-  Awaiting owner confirmation of the versioning proposal (first release
-  `v0.1.0`). SPEC Phase 5 notarization/CI stay optional.
+  Versioning confirmed: first release `v0.1.0` ("pyaww v0.1.0 (beta)").
+  Next: Gate 4 rehearsal → publish go-ahead. SPEC Phase 5
+  notarization/CI stay optional.
 
 ## Phase 4
 
@@ -55,9 +56,11 @@ lists live in the phase reports, not here.
   `--segment-text` for inspection (CLI default stays raw). Evidence:
   `docs/decisions.md` (Phase 4), `docs/performance.md` (cost).
 
-- **Remaining for Gate 4 (2026-10-17):** README (build / install /
-  permissions / troubleshooting) + clean-install rehearsal from the README
-  alone.
+- **Gate 4 close-out (2026-10-17):** `README.md`, `CHANGELOG.md` and the
+  DMG kit (`scripts/make-dmg.sh`, `scripts/make-dmg-background.swift`)
+  are in. Remaining: the owner's clean-install rehearsal from the README
+  alone (Gatekeeper *Open Anyway* journey, fresh permission prompts),
+  then the publish go-ahead (`git push` + `gh release create v0.1.0`).
 
 ## Agent / engineering
 
