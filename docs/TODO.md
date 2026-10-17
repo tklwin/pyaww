@@ -5,6 +5,15 @@ lists live in the phase reports, not here.
 
 ## Recently closed (recorded in docs/decisions.md)
 
+- ✅ **Gate 4 rehearsal (2026-10-17):** owner ticked all 8 steps in
+  `docs/manual-test-log.md` — clean install from the README alone
+  (Gatekeeper *Open Anyway*, fresh permission prompts, first dictation,
+  red wave, README wording). Afterwards the installer window was
+  diagnosed and fixed (macOS 26 Finder race: it opened 920×464 with
+  white bands; now exactly 600×400 with icons on the arrow line — a
+  build-time `.DS_Store` patch, `scripts/patch-ds-store.py`); artifact
+  rebuilt and re-staged in `~/Downloads` (quarantined). Next: publish
+  go-ahead.
 - ✅ **Menu bar wave (2026-10-17):** custom icon shipped — the app icon's
   wave drawn at runtime (`App/MenuBarIcon.swift`); template idle plus
   transcribing, real red while recording (owner's call). Verified live in
@@ -44,8 +53,13 @@ lists live in the phase reports, not here.
   GitHub Releases + README "Open Anyway" steps + `xattr` fallback; no
   Apple Developer Program, no brew, no CI (`gh release create` locally).
   Versioning confirmed: first release `v0.1.0` ("pyaww v0.1.0 (beta)").
-  Next: Gate 4 rehearsal → publish go-ahead. SPEC Phase 5
-  notarization/CI stay optional.
+  Gate 4 rehearsal green (log ticked) and the installer window fixed.
+  Next: the publish go-ahead (`git push origin main`, tag, release).
+  SPEC Phase 5 notarization/CI stay optional.
+- **Icon fill: question open (2026-10-17).** In System Settings lists our
+  icon shows the Apple-grid transparent margin as a light plate (their
+  reference apps ship full-canvas artwork). Owner to choose: keep the
+  Apple proportions or re-bake `Resources/AppIcon.icns` edge-to-edge.
 
 ## Phase 4
 
@@ -57,10 +71,10 @@ lists live in the phase reports, not here.
   `docs/decisions.md` (Phase 4), `docs/performance.md` (cost).
 
 - **Gate 4 close-out (2026-10-17):** `README.md`, `CHANGELOG.md` and the
-  DMG kit (`scripts/make-dmg.sh`, `scripts/make-dmg-background.swift`)
-  are in. Remaining: the owner's clean-install rehearsal from the README
-  alone (Gatekeeper *Open Anyway* journey, fresh permission prompts),
-  then the publish go-ahead (`git push` + `gh release create v0.1.0`).
+  DMG kit (`scripts/make-dmg.sh`, `scripts/make-dmg-background.swift`,
+  `scripts/patch-ds-store.py`) are in. Rehearsal green (log ticked) and
+  the installer window fixed; remaining: the publish go-ahead
+  (`git push` + `gh release create v0.1.0`).
 
 ## Agent / engineering
 

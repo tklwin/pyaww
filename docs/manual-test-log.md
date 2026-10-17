@@ -97,11 +97,23 @@ first-run prompts.
 
 | Step | Expected | ✅ / notes |
 | --- | --- | --- |
-| Open the DMG in `~/Downloads` | "Install this app?" dialog → **Install** (or drag to Applications) | |
-| First launch of the installed app | Gatekeeper block ("Apple could not verify …") | |
-| System Settings → Privacy & Security → **Open Anyway** → confirm | Pyaww launches; menu bar wave appears | |
-| First dictation attempt | Microphone prompt → **Allow** | |
-| Menu → *Grant Accessibility Access…* | System Settings opens; enable Pyaww, return to Pyaww | |
-| Hold Right Option, say a short phrase, release | Text pastes at the cursor | |
-| Menu bar while recording | Wave turns red; white again when idle | |
-| README wording check | dialog texts / paths / menu names match the README | |
+| Open the DMG in `~/Downloads` | "Install this app?" dialog → **Install** (or drag to Applications) |✅ |
+| First launch of the installed app | Gatekeeper block ("Apple could not verify …") |✅ |
+| System Settings → Privacy & Security → **Open Anyway** → confirm | Pyaww launches; menu bar wave appears |✅ |
+| First dictation attempt | Microphone prompt → **Allow** |✅ |
+| Menu → *Grant Accessibility Access…* | System Settings opens; enable Pyaww, return to Pyaww |✅ |
+| Hold Right Option, say a short phrase, release | Text pastes at the cursor |✅ |
+| Menu bar while recording | Wave turns red; white again when idle |✅ |
+| README wording check | dialog texts / paths / menu names match the README |✅ |
+
+**2026-10-17 (later): installer window polish.** After the rehearsal, the
+packaged window was diagnosed and fixed — on macOS 26 the styling step's
+AppleScript `set bounds` can lose a race with Finder, so the shipped
+window had opened 920×464 (white bands right of/below the 600×400
+background, icons ~45 pt under the arrow line). `scripts/make-dmg.sh`
+now normalizes the saved `.DS_Store` after styling (window exactly
+600×400, item row on the arrow line). `~/Downloads/Pyaww-0.1.0-arm64.dmg`
+was refreshed (quarantined again); the flow is unchanged, so the ticks
+above stay valid — re-open the new image only to see the polish.
+`dist/Pyaww-0.1.0-arm64.dmg` sha256
+`1fff3372637d7be7314f406dd5399d6b6b1b55e07a8b0422ef0f3117dd1eaaad`.

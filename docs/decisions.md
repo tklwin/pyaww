@@ -405,6 +405,40 @@ become final.
   notarization. No CI: releases published locally with `gh release create`.
   Versioning proposal (first release `v0.1.0`, keep-a-changelog, DMG
   `Pyaww-0.1.0-arm64.dmg`) awaits owner confirmation.
+- **Installer window diagnosed + fixed (2026-10-17, after Gate 4).** The
+  owner invited a second look at the styled DMG ("you may find some
+  odds"). Measured findings (pixel probes on captures + parsing the
+  volume's `.DS_Store`): (1) macOS 26's Finder races the styling
+  AppleScript's `set bounds` — the first build lost the race and saved
+  its default `{{289, 214}, {920, 464}}` frame, so the 600×400 picture
+  sat in a 920-wide window; the uncovered icon-view area shows the
+  default white background. (2) Icon-view items draw ~45 pt *below*
+  their stored y (calibrated with the app icon's self-centering wave:
+  stored y=200 drew at 244.8), so icons landed under the design's arrow
+  line. (3) The saved frame's y is Quartz coordinates (from the screen
+  bottom) — the reason position values look swapped. (4) macOS 26 keeps
+  the Finder status bar despite the saved `ShowStatusBar=false` (kept —
+  it reads as a deliberate footer) and gives the `/Applications` symlink
+  Finder's standard alias badge (kept). (5) The `.background` folder is
+  visible only when hidden files are shown (dev machines; vorssaint
+  shares this — accepted). Fix: after the styling detach and before
+  compression, `make-dmg.sh` re-attaches quietly and
+  `scripts/patch-ds-store.py` same-length byte-patches the `.DS_Store`
+  (window frame 600×400 with x=200 and the saved y kept; items stored at
+  y=155 so they draw on the arrow line). Structural surprises fail the
+  build. Verified on a fresh mount: 600×400 window, background fills it,
+  icons on the arrow line. Testing note: this Mac caches per-volume view
+  state, so re-mounting the same image for checks shows stale geometry —
+  verify with a freshly built image (new volume UUID).
+- **Icon rendering in System Settings (open, 2026-10-17).** The owner
+  noticed our icon shows a light plate with inset artwork in the
+  microphone permission list, while OpenWhispr/Raycast/Recordly fill
+  their tile. Cause: their icons are full-canvas artwork; ours follows
+  the Apple icon grid (~80 % content, transparent margin) from the Icon
+  Composer Default export — invisible against the DMG's azure background
+  ("full" in Finder) but visible on neutral system backgrounds. Options:
+  keep Apple's proportions, or re-bake `Resources/AppIcon.icns`
+  edge-to-edge. Owner decides.
 - **[OWNER] Versioning confirmed; release kit landed (2026-10-17).** Owner
   approved the proposal ("yes proceed"): first public release **v0.1.0**
   ("pyaww v0.1.0 (beta)"), Keep-a-Changelog + SemVer,

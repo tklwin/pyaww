@@ -119,6 +119,14 @@ gh release create v<version> dist/Pyaww-<version>-arm64.dmg \
     --title "pyaww v<version>" --notes-file <release notes>
 ```
 
+On macOS 26 the styling step's AppleScript `set bounds` can lose a race
+with Finder and the saved window ends up larger than the 600×400
+background. `make-dmg.sh` therefore re-attaches the image quietly (no
+Finder) after styling and `scripts/patch-ds-store.py` byte-patches the
+saved `.DS_Store` (window 600×400, item row on the arrow line) before
+compression. If the patcher prints an `✗`, it failed on purpose — do not
+ship that image.
+
 Release notes are the matching `CHANGELOG.md` section plus the short
 install blurb. Distribution is intentionally not notarized (free project,
 no Apple Developer Program subscription) — `README.md`'s install section

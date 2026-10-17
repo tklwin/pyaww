@@ -131,6 +131,25 @@ hdiutil detach "$MOUNT" -quiet \
     || hdiutil detach "$MOUNT" -force -quiet
 MOUNT=""
 
+# macOS 26's Finder ignores the AppleScript `set bounds` above and saves its
+# own default window frame into the .DS_Store. Re-attach quietly (no Finder,
+# so nothing re-flushes the view state) and patch the saved window frame and
+# item positions so the window opens exactly the size of the 600×400
+# background picture. See scripts/patch-ds-store.py for details.
+echo "▸ Patching .DS_Store (window frame + icon row)…"
+ATTACH_OUTPUT="$(hdiutil attach "$RW" -nobrowse)"
+MOUNT="$(printf '%s\n' "$ATTACH_OUTPUT" | awk '/\/Volumes\// {print substr($0, index($0, "/Volumes/")); exit}')"
+if [[ -z "$MOUNT" || ! -d "$MOUNT" ]]; then
+    echo "✗ Could not find mounted volume for the .DS_Store patch" >&2
+    printf '%s\n' "$ATTACH_OUTPUT" >&2
+    exit 1
+fi
+python3 scripts/patch-ds-store.py "$MOUNT"
+sync
+hdiutil detach "$MOUNT" -quiet \
+    || hdiutil detach "$MOUNT" -force -quiet
+MOUNT=""
+
 echo "▸ Compressing…"
 mkdir -p dist
 rm -f "$OUT"
