@@ -69,32 +69,40 @@ public final class ModelRunner {
 
     /// Runs the encoder. `mel` must be the zero-padded (1, 3001, 80) tensor;
     /// biases must follow the mask contract for the real audio length.
+    ///
+    /// Each call runs in an explicit `autoreleasepool`: Core ML allocates
+    /// Objective-C objects (feature values, internal buffers) per prediction,
+    /// and the actor executor has no run-loop drain — without the pool,
+    /// memory grew ~4.7 MB per dictation (Phase 3 soak: 99 → 572 MB over
+    /// 100 runs).
     public func logits(mel: [Float], frameBias: [Float], conv1Bias: [Float]) throws -> Logits {
-        let melArray = try Self.makeMultiArray(mel, shape: [1, Self.melFrames, ModelConstants.melBins])
-        let frameBiasArray = try Self.makeMultiArray(frameBias, shape: [1, Self.encoderFrames])
-        let conv1BiasArray = try Self.makeMultiArray(conv1Bias, shape: [1, Self.conv1Frames])
+        try autoreleasepool {
+            let melArray = try Self.makeMultiArray(mel, shape: [1, Self.melFrames, ModelConstants.melBins])
+            let frameBiasArray = try Self.makeMultiArray(frameBias, shape: [1, Self.encoderFrames])
+            let conv1BiasArray = try Self.makeMultiArray(conv1Bias, shape: [1, Self.conv1Frames])
 
-        let provider = try MLDictionaryFeatureProvider(dictionary: [
-            Self.melKey: MLFeatureValue(multiArray: melArray),
-            Self.frameBiasKey: MLFeatureValue(multiArray: frameBiasArray),
-            Self.conv1BiasKey: MLFeatureValue(multiArray: conv1BiasArray),
-        ])
+            let provider = try MLDictionaryFeatureProvider(dictionary: [
+                Self.melKey: MLFeatureValue(multiArray: melArray),
+                Self.frameBiasKey: MLFeatureValue(multiArray: frameBiasArray),
+                Self.conv1BiasKey: MLFeatureValue(multiArray: conv1BiasArray),
+            ])
 
-        let prediction: MLFeatureProvider
-        do { prediction = try model.prediction(from: provider) }
-        catch { throw RunnerError.predictionFailed(error.localizedDescription) }
+            let prediction: MLFeatureProvider
+            do { prediction = try model.prediction(from: provider) }
+            catch { throw RunnerError.predictionFailed(error.localizedDescription) }
 
-        guard let output = prediction.featureValue(for: outputName)?.multiArrayValue else {
-            throw RunnerError.noOutput
+            guard let output = prediction.featureValue(for: outputName)?.multiArrayValue else {
+                throw RunnerError.noOutput
+            }
+            let shape = output.shape.map { $0.intValue }
+            guard shape.count == 3, shape[0] == 1 else {
+                throw RunnerError.unexpectedOutputShape(shape)
+            }
+            let frames = shape[1]
+            let vocab = shape[2]
+            let values = try Self.floats(from: output, frames: frames, vocab: vocab)
+            return Logits(values: values, frames: frames, vocab: vocab)
         }
-        let shape = output.shape.map { $0.intValue }
-        guard shape.count == 3, shape[0] == 1 else {
-            throw RunnerError.unexpectedOutputShape(shape)
-        }
-        let frames = shape[1]
-        let vocab = shape[2]
-        let values = try Self.floats(from: output, frames: frames, vocab: vocab)
-        return Logits(values: values, frames: frames, vocab: vocab)
     }
 
     // MARK: - Helpers
