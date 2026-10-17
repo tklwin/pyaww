@@ -33,24 +33,26 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon — shape A + colour C4 locked; grid question settled (2026-10-17):**
-  owner picked C4 (white ribbon on `#4DA6F4 → #1461E0`; fun fact: the
-  anchor blue is literally Apple's demo-bead blue `#4da6f4` inside the
-  template file). Measured from the file itself: the template is an
-  **8×8 grid at 128 px** (lines at 128…896; corrected an earlier 6-cell
-  misreading) and the keyline circles are **d820 / d512 / d204** (not
-  853). The duplicated working file
+- **Icon — final wave locked, layer SVGs exported (2026-10-17):** owner
+  picked **B** — the wide ribbon uniformly scaled 11/12: cap tips sit
+  exactly on the 128/896 grid lines (tip distance 388.46 < d820 ring
+  radius 410), stroke 64, round caps, apexes on the diagonal,
+  dead-centre crossing, point-symmetric. Measured from the file itself:
+  the Apple template is an **8×8 grid at 128 px** (lines at 128…896) with
+  keyline circles **d820 / d512 / d204**; the C4 anchor blue `#4DA6F4` is
+  literally Apple's demo-bead blue. The working file
   `Design/Pyaww-Icon-Template.vectorcraft` (local-only, gitignored —
-  carries Apple content) has the C4 field painted on Apple's own
-  background path, plus three ribbon candidates drawn on the real grid:
-  OLD hand-tuned (150–884), WIDE 128–896 (apexes on the 384/384 &
-  640/640 grid/diagonal intersections, dead-centre crossing, stroke 64 =
-  half-cell, point-symmetric; recommended), CONTAINED 256–768. Owner
-  pick pending. Then: rebuild final art → re-export layer SVGs → refresh
-  `Design/Pyaww.icon` → owner Icon Composer glass pass → export PNG(s) →
-  bake `Resources/AppIcon.icns` (replaces the interim
-  `./scripts/make-icon.sh` icns). Comparison sheet
-  `Design/template-snap-v1.png` is local-only (Apple template content).
+  Apple content) is now cleaned to just **Wave (final) + Apple's grid +
+  the C4 field** (the three trial ribbons were deleted; pre-clean backup
+  kept in the temp dir). Final layer SVGs re-exported in C4 with Apple
+  metadata stripped: `Design/icon-assets/1.background.svg` (field —
+  gradient runs **diagonally**, top-left `#4DA6F4` → bottom-right
+  `#1461E0`) and `Design/icon-assets/2.ribbon.svg` (the wave, white
+  `#FFFFFF`, stroke 64 on the 1024 canvas). `Design/Pyaww.icon` package
+  refreshed alongside. Next: owner's Icon Composer glass pass → export
+  all icon variations → bake `Resources/AppIcon.icns` (replaces the
+  interim `./scripts/make-icon.sh` icns). Comparison sheets
+  `Design/template-snap-*.png` are local-only (Apple template content).
 
 ## Phase 4
 
@@ -63,7 +65,8 @@ lists live in the phase reports, not here.
 
 - **Remaining for Gate 4 (2026-10-17):** README (build / install /
   permissions / troubleshooting) + clean-install rehearsal from the README
-  alone. Icon: four lab directions under owner review (see Owner action).
+  alone. Icon: final art locked; owner's Icon Composer pass in progress
+  (see Owner action).
 
 ## Agent / engineering
 

@@ -337,3 +337,20 @@ become final.
   a back-and-forth (personal-only vs share with a few people vs public)
   before choosing; SPEC Phase 5 (Developer ID + notarization, CI) stays
   gated on that outcome and nothing there has been started.
+- **[OWNER] Icon wave final locked — variant B (2026-10-17).** Owner chose
+  B over their hand-scaled ribbon: the wide ribbon uniformly scaled 11/12
+  about the centre — end-centres (160, 570.6667) → (864, 453.3333), apexes
+  (394.6667, 394.6667) / (629.3333, 629.3333), cap tips exactly on the
+  128/896 grid lines, tip distance 388.46 vs d820 ring radius 410, stroke
+  64, round caps. A proportional scale is a similarity transform, so all
+  feel-defining physics are unchanged (handle:chord = 0.500, zero-velocity
+  turns on the diagonal, dead-centre crossing, point symmetry). The
+  working file was cleaned to **Wave (final) + Apple's grid + the C4
+  field** (trial ribbons deleted; pre-clean copy parked in the temp dir),
+  and the layer SVGs were re-exported in final colours with Apple's
+  template metadata stripped: `Design/icon-assets/1.background.svg` +
+  `2.ribbon.svg`, mirrored into the refreshed `Design/Pyaww.icon`
+  package. Measured from the file (not assumed): the C4 gradient runs
+  **diagonally**, top-left `#4DA6F4` → bottom-right `#1461E0`
+  (`x1,y1,x2,y2 = 0,0,1024,1024`, `userSpaceOnUse`). Owner does the Icon
+  Composer glass pass next; then bake `Resources/AppIcon.icns`.

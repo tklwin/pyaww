@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="linear-gradient-1" x1="150" y1="420" x2="884" y2="640" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ff7a59"/>
-      <stop offset="1" stop-color="#7c4def"/>
-    </linearGradient>
-  </defs>
-  <title>Pyaww Icon Final</title>
-  <g id="Ribbon">
-    <path id="Ribbon-2" data-name="Ribbon" d="M150 600 C272 600 272 380 395 380 C517 380 517 640 640 640 C762 640 762 430 884 430" fill="none" stroke="url(#linear-gradient-1)" stroke-width="68" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Pyaww wave (final)</title>
+  <path d="M160 570.6667 C 277.3333 570.6667 277.3333 394.6667 394.6667 394.6667 C 512 394.6667 512 629.3333 629.3333 629.3333 C 746.6667 629.3333 746.6667 453.3333 864 453.3333"
+        fill="none" stroke="#FFFFFF" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
