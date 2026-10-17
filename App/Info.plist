@@ -8,6 +8,8 @@
 	<string>Pyaww</string>
 	<key>CFBundleExecutable</key>
 	<string>PyawwApp</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.tklwin.pyaww</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -24,6 +26,8 @@
 	<string>14.0</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Thein Kyaw Lwin. MIT licensed.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Pyaww transcribes your speech locally on this Mac. Audio never leaves your computer.</string>
 </dict>

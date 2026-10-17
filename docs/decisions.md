@@ -315,3 +315,25 @@ become final.
 - **Settings fix pushed (2026-10-17):** after owner verification, `a97c499`
   (fronting fix + test-runner `TestingMacros` plugin-path flags + docs) is
   on `origin/main`.
+- **[OWNER] License = MIT (2026-10-17).** Pyaww's own code (app, core,
+  scripts, tooling) is MIT — `LICENSE` added at the repo root, copyright
+  "Thein Kyaw Lwin" (owner may rename). Third-party attributions are
+  unaffected (bundled model Apache-2.0 by freococo; mmdt-tokenizer port
+  MIT by Myanmar Data Tech).
+- **[OWNER] "Pyaww" name check done (2026-10-17).** Agent-run collision
+  check, findings in `docs/name-check.md`: no active product with the
+  name; the only exact-spelling software match is a dormant 2022 PyPI
+  package unrelated to dictation; nearest live trademark is PAWW
+  (class 009) — relevant only if Pyaww is ever released publicly. Name
+  kept; `pyaww.com` happens to be unregistered.
+- **Phase 4 close-out started (2026-10-17):** remaining Phase 4 items are
+  the app icon, the README, and the Gate 4 clean-install rehearsal. Icon
+  draft landed: `scripts/make-icon.swift` (AppKit renderer) +
+  `scripts/make-icon.sh` (iconset → `Resources/AppIcon.icns`), wired into
+  `App/Info.plist` (`CFBundleIconFile`) and `scripts/make-app.sh`; design =
+  indigo→violet rounded square with the Burmese ပြော glyph (draft for
+  owner review — regenerate after tweaks with one command).
+- **[OWNER] Distribution plan: discussion open (2026-10-17).** Owner wants
+  a back-and-forth (personal-only vs share with a few people vs public)
+  before choosing; SPEC Phase 5 (Developer ID + notarization, CI) stays
+  gated on that outcome and nothing there has been started.

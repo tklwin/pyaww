@@ -31,6 +31,14 @@ for f in "${CONSTANTS[@]}"; do
     cp "Models/$f" "$APP_DIR/Contents/Resources/Models/"
 done
 
+# App icon (draft 2026-10-17; regenerate with scripts/make-icon.sh).
+ICON="Resources/AppIcon.icns"
+if [ ! -f "$ICON" ]; then
+    echo "error: $ICON not found — run scripts/make-icon.sh" >&2
+    exit 1
+fi
+cp "$ICON" "$APP_DIR/Contents/Resources/"
+
 # Owner decision (2026-10-17): ship the Phase 4 word-segmentation lexicon.
 # Both layouts are copied; PyawwCoreResources checks the direct file first,
 # then the SPM resource bundle (Contents/Resources of the app).
