@@ -28,6 +28,9 @@ final class FakeRecorder: AudioRecording {
 
 actor FakeTranscriber: Transcribing {
     private(set) var callCount = 0
+    /// Sample count of the most recent call — lets tests assert the app's
+    /// window clipping.
+    private(set) var lastSampleCount: Int?
     private let text: String
     private let delay: Duration
 
@@ -38,6 +41,7 @@ actor FakeTranscriber: Transcribing {
 
     func transcribe(samples: [Float]) async throws -> String {
         callCount += 1
+        lastSampleCount = samples.count
         if delay > .zero {
             try? await Task.sleep(for: delay)
         }

@@ -1,32 +1,38 @@
 import AppKit
 import Foundation
 import Observation
-import SwiftUI
 import os
 import PyawwCore
 
 /// Pyaww — menu bar Myanmar dictation (SPEC §4). No Dock icon (LSUIElement).
 ///
+/// Entry point is AppKit (owner decision 2026-10-18): the app hosts its own
+/// status item + popover (`MenuBarController`) — the vorssaint pattern —
+/// because SwiftUI's `MenuBarExtra` pinned its plain square panel to the
+/// screen corner. Settings live in the popover (`MenuPanelView`); there is
+/// no separate Settings window.
+///
 /// Note: this machine has Command Line Tools only, whose toolchain does not
 /// ship `SwiftUIMacros`, so macro-based wrappers (`@State`, `@Entry`, …)
 /// cannot compile; the app uses Observation (`@Observable`, `@Bindable`)
-/// instead. Plain (non-macro) wrappers such as `@Environment` are fine —
-/// `@Environment(\.openSettings)` opens the Settings window (`MenuBarView`).
+/// instead. Plain (non-macro) wrappers such as `@Environment` are fine.
 @main
-struct PyawwApp: App {
-    private let model = AppModel()
+@MainActor
+final class PyawwAppDelegate: NSObject, NSApplicationDelegate {
+    private var model: AppModel?
+    private var menuBar: MenuBarController?
 
-    var body: some Scene {
-        MenuBarExtra {
-            MenuBarView(model: model)
-        } label: {
-            MenuBarLabel(state: model.state)
-        }
-        .menuBarExtraStyle(.menu)
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = PyawwAppDelegate()
+        app.delegate = delegate
+        app.run()
+    }
 
-        Settings {
-            SettingsView(model: model)
-        }
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let model = AppModel()
+        self.model = model
+        menuBar = MenuBarController(model: model)
     }
 }
 

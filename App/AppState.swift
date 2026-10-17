@@ -88,7 +88,8 @@ final class AppState {
 
     func modelLoadFailed(_ message: String) {
         isModelReady = false
-        showError("the speech model failed to load: \(message)")
+        logger.error("the speech model failed to load: \(message, privacy: .public)")
+        showError("speech model failed to load — reopen Pyaww")
     }
 
     // MARK: - Menu bar presentation
@@ -113,13 +114,14 @@ final class AppState {
             break
         }
         guard isModelReady else {
-            showError("the speech model is still loading — hold the key again in a moment")
+            showError("still loading — try again in a moment")
             return
         }
         do {
             try recorder.startRecording()
         } catch {
-            showError("\(error)")
+            logger.error("could not start recording: \(String(describing: error), privacy: .public)")
+            showError("could not start the recording")
             return
         }
         phase = .recording
@@ -166,13 +168,23 @@ final class AppState {
     private func finishRecording(stoppedBy reason: StopReason) async {
         guard phase == .recording else { return }
         playCue(named: "Pop")
-        let samples: [Float]
+        var samples: [Float]
         do {
             samples = try await recorder.stopRecording()
         } catch {
             phase = .idle
-            showError("could not stop the recording: \(error)")
+            logger.error("could not stop the recording: \(String(describing: error), privacy: .public)")
+            showError("could not stop the recording")
             return
+        }
+        // The audio tap can deliver one last buffer after the stop decision,
+        // so a limit stop can end a fraction past the model's fixed window
+        // (seen in the owner's live >30 s test, 2026-10-18). Clip instead of
+        // letting the transcriber throw: the notice's promise
+        // ("transcribing what was captured") must hold.
+        if samples.count > Transcriber.maxSamples {
+            logger.debug("clipping \(samples.count) samples to the 30 s window")
+            samples = Array(samples.prefix(Transcriber.maxSamples))
         }
 
         let duration = Double(samples.count) / Double(Transcriber.sampleRate)
@@ -187,7 +199,7 @@ final class AppState {
             return
         }
         if reason == .limit {
-            showNotice("the \(Int(settings.maximumDuration)) s limit was reached — transcribing what was captured")
+            showNotice("\(Int(settings.maximumDuration)) s limit reached — using what was captured")
         }
         guard let transcriber else {
             phase = .error("the speech model is not loaded")
@@ -205,7 +217,11 @@ final class AppState {
                 if Task.isCancelled {
                     self.phase = .idle
                 } else {
-                    self.showError("transcription failed: \(error)")
+                    // A short headline goes in the header; the technical
+                    // detail stays in the log — embedded raw errors made
+                    // the header grow and truncate (owner's live test).
+                    self.logger.error("transcription failed: \(String(describing: error), privacy: .public)")
+                    self.showError("transcription failed — try again")
                 }
             }
         }
@@ -225,7 +241,7 @@ final class AppState {
         }
         guard !text.isEmpty else {
             phase = .idle
-            showNotice("nothing recognizable was heard — no text was pasted")
+            showNotice("nothing recognizable — no text was pasted")
             return
         }
         let outcome = await inserter.insert(text, restoreClipboard: settings.restoreClipboard)

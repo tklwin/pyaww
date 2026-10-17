@@ -134,3 +134,24 @@ the centre at 155). `~/Downloads/Pyaww-0.1.0-arm64.dmg` refreshed again
 (quarantined); the ticks above are unaffected — re-open the new image
 only to see the fix. `dist/Pyaww-0.1.0-arm64.dmg` sha256
 `915d010105aefe51598ace63c4a1fd7cf964f97333894155dc82cd7d8a35ddba`.
+
+## Popover rework re-verify — owner session (2026-10-18)
+
+The wave now opens the panel (the plain menu and the Settings window are
+retired). Verified live with the owner, watching screen captures frame by
+frame:
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| Click the wave | Panel centred under the icon, rounded corners + arrow, wave highlighted while open |✅ "wowww. it is great look" |
+| Push-to-talk key | Segmented control switching Right ⌥ / Right ⌘; hint text follows |✅ |
+| Permissions card | Both status dots green after the earlier grants |✅ |
+| Header shape | Status / notice / error keep the same two-line height; nothing truncates |✅ "it is ok now" |
+| Model card | "Speech model — Myanmar Conformer"; no segmentation row while healthy |✅ |
+| Footer | Version, GitHub link, ⏻ Quit |✅ |
+| ⏻ Quit (restyled final button) | app exits cleanly | pending owner click on the final build |
+| Hold past 30 s (owner's intentional test) | limit notice; the captured audio transcribes and pastes | tap-slop bug fixed, regression test added; owner re-test pending |
+
+Known follow-ups before publishing: rebuild the DMG from this build (the
+rehearsal image predates the popover), and re-check the Gate 4
+UI-wording row ("menu names match the README") against the rebuilt image.

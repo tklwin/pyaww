@@ -17,7 +17,6 @@ import AppKit
 enum MenuBarIcon {
     /// Logical size of the glyph in the menu bar, in points.
     static let canvas = NSSize(width: 18, height: 18)
-
     static let idle = wave(tint: nil, alpha: 1)
     static let transcribing = wave(tint: nil, alpha: 0.45)
     static let recording = wave(tint: .systemRed, alpha: 1)
@@ -52,5 +51,29 @@ enum MenuBarIcon {
         }
         image.isTemplate = tint == nil
         return image
+    }
+
+    /// The current icon for the status item (this was `MenuBarLabel` while
+    /// the app still used SwiftUI's `MenuBarExtra`; owner decision
+    /// 2026-10-18 switched to a hosted popover — FR-8 is unchanged): the
+    /// template wave in idle/transcribing, the real recording red while
+    /// live, and system symbols only where a distinct system meaning beats
+    /// the brand mark (loading, errors).
+    static func image(for state: AppState) -> NSImage {
+        if case .idle = state.phase, !state.isModelReady {
+            return symbol("hourglass")
+        }
+        switch state.phase {
+        case .idle: return idle
+        case .recording: return recording
+        case .transcribing: return transcribing
+        case .error: return symbol("exclamationmark.triangle")
+        }
+    }
+
+    /// System symbol as a menu bar image; falls back to the idle wave if
+    /// the symbol is unavailable (no force-unwrap — SPEC §9).
+    private static func symbol(_ name: String) -> NSImage {
+        NSImage(systemSymbolName: name, accessibilityDescription: nil) ?? idle
     }
 }

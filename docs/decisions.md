@@ -504,3 +504,45 @@ become final.
   *Open Anyway* journey with a quarantined copy, fresh permission prompts
   (`tccutil reset` for that run), first transcription — then the publish
   go-ahead (`git push` + `gh release create v0.1.0`).
+
+## Popover rework (2026-10-18)
+
+- **[OWNER, approved 2026-10-18] The wave opens a full panel; the menu and
+  the Settings window are retired.** "yes build it now" — one card-based
+  popover (header; Permissions; Dictation; Pasting; Feedback; Model)
+  replaces both surfaces; `MenuBarView`/`SettingsView`/`SettingsWindow`
+  deleted and the `Settings` scene removed.
+- **Hosted `NSPopover` on our own status item — the teacher's pattern,
+  adopted after `MenuBarExtra` failed the owner's look test.** The first
+  attempt (SwiftUI `MenuBarExtra(.window)`) pinned its plain square panel
+  to the screen corner, with no API to centre or round it — owner:
+  "teacher poppup at middle … ours is solid corner". The app entry is now
+  AppKit (`NSApplicationDelegate` + `NSStatusItem` + `NSPopover`): macOS
+  anchors the popover centred under the icon and draws the rounded
+  container + arrow itself, and highlights the anchor while open. Both
+  mouse buttons toggle; a same-click reopen after a transient close is
+  guarded. (vorssaint `StatusItemController` as the reference.)
+- **Quit lives in the panel footer, teacher-style.** A right-click
+  `NSMenu` (with ⌘Q) was built and removed the same day — owner: "i don't
+  like left click and right click to quit, teacher use". The footer is
+  `pyaww v0.1.0` + the GitHub link + a quiet `⏻ Quit` button (flat fill,
+  hairline border, icon + label), trimmed to the panel's control scale
+  after the owner judged the first cut "little wide or big".
+- **The header keeps one shape (owner question, 2026-10-18).** A single
+  message line under "Pyaww": error > fresh notice (orange) > live
+  status — every message short enough for one line, so the panel never
+  changes height and nothing truncates.
+- **Model card shows identity, not status.** "Speech model — Myanmar
+  Conformer" (SPEC §1's own words) once ready, a spinner while loading;
+  the word-segmentation row appears only when the lexicon is unavailable
+  — a row that always said "Ready" was noise (the header already says it).
+- **Over-window audio is clipped, not rejected (bug found by the owner's
+  live test, 2026-10-18).** Holding past the 30 s limit let the tap's last
+  buffer push the capture past the model's fixed window; `Transcriber`
+  threw "audio is too long" — contradicting the notice's promise — and
+  the raw message truncated in the header. `AppState` now clips to
+  `Transcriber.maxSamples` before transcribing; regression test
+  `overWindowRecordingIsClippedToModelWindow` added.
+- **Footer GitHub link (owner request, 2026-10-18).** Opens
+  `github.com/tklwin/pyaww` in the browser on click; the app itself still
+  makes no network requests (SPEC §1 unchanged).

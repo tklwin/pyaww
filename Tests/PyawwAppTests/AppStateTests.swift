@@ -134,6 +134,22 @@ struct AppStateTests {
         #expect(inserter.inserted == ["မင်္ဂလာပါ"])
     }
 
+    /// The tap can deliver one last buffer after the stop decision; a
+    /// recording a hair over the model's fixed 30 s window must be clipped,
+    /// not fail (owner's live >30 s test, 2026-10-18).
+    @Test func overWindowRecordingIsClippedToModelWindow() async throws {
+        let (state, recorder, transcriber, _) = try makeState()
+        recorder.samplesToReturn = tone(seconds: 30.2)
+
+        state.hotkeyPressed()
+        state.hotkeyReleased()
+        await state.recordingStopTask?.value
+        await state.transcriptionTask?.value
+
+        #expect(state.phase == .idle)
+        #expect(await transcriber.lastSampleCount == Transcriber.maxSamples)
+    }
+
     @Test func insertionFailureShowsError() async throws {
         let (state, recorder, _, _) = try makeState(
             insertionOutcome: .copiedToClipboardOnly(reason: "Accessibility permission is off"))

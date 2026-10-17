@@ -44,8 +44,7 @@ dialog put it there.
 ## Permissions
 
 Pyaww asks for two permissions, only when they're first needed. Both can
-also be opened from Pyaww's menu (the wave in the menu bar) or its
-Settings window.
+also be opened from the panel — click the wave in the menu bar.
 
 | Permission | Why | Where |
 | --- | --- | --- |
@@ -55,7 +54,7 @@ Settings window.
 ## Using Pyaww
 
 - **Hold Right Option (⌥)** and speak — or switch to Right Command (⌘) in
-  Settings. Release the key to transcribe and paste.
+  the panel. Release the key to transcribe and paste.
 - **Esc** cancels a recording (or abandons a transcription in progress).
 - Recordings shorter than the minimum (0.3 s by default) are ignored, and
   so are silent ones.
@@ -63,10 +62,11 @@ Settings window.
   still transcribed.
 - The menu bar wave follows the menu bar appearance when idle and turns
   **red while recording**.
-- **Settings** offer the push-to-talk key, minimum/maximum durations,
-  Myanmar word segmentation (on by default — it joins the model's
-  syllable spacing into natural words), clipboard restore, a recording
-  sound cue, and launch at login.
+- **Click the wave** to open the panel: permission status, the
+  push-to-talk key, minimum/maximum durations, Myanmar word segmentation
+  (on by default — it joins the model's syllable spacing into natural
+  words), clipboard restore, a recording sound cue, launch at login,
+  model status, and Quit.
 
 ## Privacy
 
@@ -81,7 +81,7 @@ Settings window.
 Requires the Xcode Command Line Tools — a full Xcode is not needed.
 
 ```sh
-./scripts/test.sh       # 34 tests (core + app)
+./scripts/test.sh       # 35 tests (core + app)
 ./scripts/make-app.sh   # → build/Pyaww.app
 ./scripts/make-dmg.sh   # → dist/Pyaww-<version>-arm64.dmg
 ```
@@ -104,8 +104,8 @@ Requires the Xcode Command Line Tools — a full Xcode is not needed.
 
 ## Uninstall
 
-Quit Pyaww from its menu, then drag it from Applications to the Trash. To
-also clear the permissions it was granted:
+Quit Pyaww from the panel (⏻ Quit), then drag it from Applications to the
+Trash. To also clear the permissions it was granted:
 
 ```sh
 tccutil reset Microphone com.tklwin.pyaww

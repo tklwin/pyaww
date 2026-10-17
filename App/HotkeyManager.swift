@@ -16,6 +16,14 @@ enum PushToTalkKey: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// Compact label for the popover's key-cap chips.
+    var keyCapLabel: String {
+        switch self {
+        case .rightOption: return "Right ⌥"
+        case .rightCommand: return "Right ⌘"
+        }
+    }
+
     /// Virtual key code reported by `flagsChanged` for this modifier.
     var keyCode: UInt16 {
         switch self {

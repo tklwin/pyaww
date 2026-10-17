@@ -21,8 +21,8 @@ final class TextInserter: TextInserting {
             pasteboard.clearContents()
             pasteboard.setString(text, forType: .string)
             let reason = secureInput
-                ? "secure input is on (password field) — text copied to the clipboard instead"
-                : "Accessibility permission is off — text copied to the clipboard instead"
+                ? "secure field — text copied to clipboard"
+                : "Accessibility off — text copied to clipboard"
             return .copiedToClipboardOnly(reason: reason)
         }
 
