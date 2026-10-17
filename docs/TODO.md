@@ -33,9 +33,12 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon draft review:** the Phase 4 app icon is drafted (indigo→violet
-  rounded square with ပြော); approve or request tweaks → regenerate with
-  `./scripts/make-icon.sh`.
+- **Icon direction pick (2026-10-17):** owner asked for fresh directions
+  after v1; four lab themes drawn in `Design/Pyaww-Icon-Lab.vectorcraft`
+  (sheet: `Design/lab-v1.png`): **A** voice ribbon, **B** sound arcs,
+  **C** jade bars + gold, **D** lacquer & gold ပ. Pick 1–2 → refine →
+  per-layer SVG export → owner finishes in Icon Composer → wire into app
+  (replaces the interim `./scripts/make-icon.sh` icns).
 
 ## Phase 4
 
@@ -48,7 +51,7 @@ lists live in the phase reports, not here.
 
 - **Remaining for Gate 4 (2026-10-17):** README (build / install /
   permissions / troubleshooting) + clean-install rehearsal from the README
-  alone. Icon: draft landed, owner review pending (see Owner action).
+  alone. Icon: four lab directions under owner review (see Owner action).
 
 ## Agent / engineering
 
