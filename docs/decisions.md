@@ -371,3 +371,37 @@ become final.
   from the ribbon blue + glass/refractivity ribbon settings); superseded
   lab drafts and the hand-made `Design/Pyaww.icon` package were removed
   from the repo (kept in git history).
+
+## Phase 4 close-out continued (2026-10-17)
+
+- **[OWNER] Menu bar icon: the wave replaces the mic (2026-10-17).** Owner
+  asked Pyaww to learn from **vorssaint** (`~/Desktop/vorssaint-utils` —
+  FOSS, Mac-native, menu bar; "they are like teacher for us") and to use a
+  custom menu bar icon, and picked the recording colour: **red** ("red for
+  recording is common"; brand azure noted as the branding-first
+  alternative). Implementation (`App/MenuBarIcon.swift`): the app icon's
+  wave "B" drawn at runtime as a vector — idle and transcribing are
+  **template** images (macOS paints them black on light and white on dark
+  menu bars), recording is a real red (`isTemplate = false`). Menu bar
+  tuning: 18 pt canvas, 16 pt ink, stroke optically bolded from the icon's
+  6.25% to ~9.7% of the ink width (1.75 pt). Loading keeps the hourglass,
+  errors the triangle symbol. Agent addition beyond the agreed
+  idle/recording pair: transcribing shows the wave at 45% alpha as a
+  subtle "busy" hint (drop it on request). Vector drawing sidesteps the
+  1x/2x PNG pairs vorssaint needs only because its glyph comes from a
+  bitmap logo; the template/tint principles are theirs. Verified live in
+  the real menu bar (red while recording 17:23, template white at idle
+  17:24) and by 5 new tests — `swift test` is now 34 (17 core + 17 app).
+  `MenuBarLabel` maps phase → icon; the retired `AppState.menuBarSymbol`
+  is gone.
+- **[OWNER] Distribution: free "Moji-style" route (2026-10-17).** No Apple
+  Developer Program subscription ($99/yr declined). First public release:
+  a DMG on GitHub Releases plus a README install section — Gatekeeper
+  dialog text, System Settings → Privacy & Security → Open Anyway (macOS 15
+  removed right-click-Open), and an `xattr -dr com.apple.quarantine`
+  fallback — then microphone/accessibility setup. Homebrew deferred:
+  Homebrew removed `--no-quarantine` (Sep 2025) and quarantined casks that
+  fail Gatekeeper get disabled, so a cask would be fragile without
+  notarization. No CI: releases published locally with `gh release create`.
+  Versioning proposal (first release `v0.1.0`, keep-a-changelog, DMG
+  `Pyaww-0.1.0-arm64.dmg`) awaits owner confirmation.

@@ -4,7 +4,7 @@
 
 | Artifact | Command | Notes |
 | --- | --- | --- |
-| Tests | `scripts/test.sh` (or plain `swift test`) | 29 tests: 17 core (`PyawwCoreTests`) + 12 app state (`PyawwAppTests`) |
+| Tests | `scripts/test.sh` (or plain `swift test`) | 34 tests: 17 core (`PyawwCoreTests`) + 17 app (`PyawwAppTests`: 12 state + 5 menu bar icon) |
 | CLI (WAV in, text out) | `swift build && .build/debug/pyaww-cli --model-dir Models clip.wav` | any AVFoundation-readable file, 0.5–30 s |
 | Menu bar app | `./scripts/make-app.sh` | release build → `build/Pyaww.app`, signed |
 | Gate 1 parity | `scripts/run-parity.sh` | one command: build, golden-set run, compare, CER |

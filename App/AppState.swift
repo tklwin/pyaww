@@ -93,15 +93,6 @@ final class AppState {
 
     // MARK: - Menu bar presentation
 
-    var menuBarSymbol: String {
-        switch phase {
-        case .idle: return isModelReady ? "mic" : "hourglass"
-        case .recording: return "mic.fill"
-        case .transcribing: return "ellipsis.circle"
-        case .error: return "exclamationmark.triangle"
-        }
-    }
-
     var statusText: String {
         switch phase {
         case .idle: return isModelReady ? "Ready" : "Loading model…"

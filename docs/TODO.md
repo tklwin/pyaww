@@ -5,6 +5,10 @@ lists live in the phase reports, not here.
 
 ## Recently closed (recorded in docs/decisions.md)
 
+- ✅ **Menu bar wave (2026-10-17):** custom icon shipped — the app icon's
+  wave drawn at runtime (`App/MenuBarIcon.swift`); template idle plus
+  transcribing, real red while recording (owner's call). Verified live in
+  the menu bar; 5 new tests (suite now 34); vorssaint-learnings recorded.
 - ✅ **Icon (2026-10-17):** final art shipped — owner's Icon Composer pass
   exported six 1024 px appearances to `Design/Icon Exports/`; the Default
   one is baked into `Resources/AppIcon.icns` by the now export-sourced
@@ -36,9 +40,11 @@ lists live in the phase reports, not here.
 
 ## Owner action
 
-- **Distribution plan** (personal-only vs sharing with others): discussion
-  open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
-  Phase 5 (Developer ID + notarization) stays gated on the outcome.
+- **Distribution: route chosen — free "Moji-style" (2026-10-17).** DMG on
+  GitHub Releases + README "Open Anyway" steps + `xattr` fallback; no
+  Apple Developer Program, no brew, no CI (`gh release create` locally).
+  Awaiting owner confirmation of the versioning proposal (first release
+  `v0.1.0`). SPEC Phase 5 notarization/CI stay optional.
 
 ## Phase 4
 
