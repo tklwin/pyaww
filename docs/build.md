@@ -4,7 +4,7 @@
 
 | Artifact | Command | Notes |
 | --- | --- | --- |
-| Tests | `swift test` | 20 tests: 11 core (`PyawwCoreTests`) + 9 app state (`PyawwAppTests`) |
+| Tests | `scripts/test.sh` (or plain `swift test`) | 29 tests: 17 core (`PyawwCoreTests`) + 12 app state (`PyawwAppTests`) |
 | CLI (WAV in, text out) | `swift build && .build/debug/pyaww-cli --model-dir Models clip.wav` | any AVFoundation-readable file, 0.5–30 s |
 | Menu bar app | `./scripts/make-app.sh` | release build → `build/Pyaww.app`, signed |
 | Gate 1 parity | `scripts/run-parity.sh` | one command: build, golden-set run, compare, CER |
@@ -58,6 +58,8 @@ Settings…, and Quit.
 build/Pyaww.app/Contents/
   MacOS/PyawwApp           release binary
   Resources/Models/        BurmeseASR-Encoder-30s.mlpackage + 4 JSON constants (~38 MB)
+  Resources/lexicons.json  word-segmentation lexicon (Phase 4; mmdt, MIT)
+  Resources/Pyaww_PyawwCore.bundle/  SPM resource bundle (same lexicon)
   Info.plist               LSUIElement, com.tklwin.pyaww, microphone usage string
 ```
 
@@ -85,5 +87,11 @@ compiler, and no `SwiftUIMacros` plugin. Therefore:
   (transcripts and audio are never logged).
 - Release builds use their own scratch directory (`.build-release/`):
   mixing a release build into `.build` breaks Swift Testing's macro-plugin
-  resolution for later `swift test` runs on this CLT toolchain. If `.build`
-  gets wedged anyway, `swift package clean` resets it.
+  resolution for later `swift test` runs on this CLT toolchain.
+- **"plugin for module 'TestingMacros' not found" after edits:** the Swift
+  Build engine reuses an on-disk build description
+  (`.build/out/Intermediates.noindex/XCBuildData`) that can lack the Swift
+  Testing plugin flags. `scripts/test.sh` deletes the cached plan
+  (`.build/manifest.pif` + `XCBuildData`) before running, which re-plans
+  correctly and stays incremental (~5 s of plan + rebuild, then the tests).
+  If `.build` gets wedged despite that, `swift package clean` resets it.

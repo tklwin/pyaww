@@ -31,6 +31,17 @@ for f in "${CONSTANTS[@]}"; do
     cp "Models/$f" "$APP_DIR/Contents/Resources/Models/"
 done
 
+# Owner decision (2026-10-17): ship the Phase 4 word-segmentation lexicon.
+# Both layouts are copied; PyawwCoreResources checks the direct file first,
+# then the SPM resource bundle (Contents/Resources of the app).
+RESOURCE_BUNDLE="$BIN_PATH/Pyaww_PyawwCore.bundle"
+if [ ! -d "$RESOURCE_BUNDLE" ]; then
+    echo "error: $RESOURCE_BUNDLE not found — PyawwCore resources did not build" >&2
+    exit 1
+fi
+cp -R "$RESOURCE_BUNDLE" "$APP_DIR/Contents/Resources/"
+cp "$RESOURCE_BUNDLE/Contents/Resources/lexicons.json" "$APP_DIR/Contents/Resources/lexicons.json"
+
 # Owner decision (2026-10-17): sign with the Apple Development identity so
 # Microphone/Accessibility grants persist across rebuilds. Fallbacks:
 # "Pyaww Local" self-signed (guide in docs/build.md), then ad-hoc.

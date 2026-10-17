@@ -42,6 +42,10 @@ final class AppState {
     private let recorder: any AudioRecording
     private let inserter: any TextInserting
     private let logger = Logger(subsystem: "com.tklwin.pyaww", category: "state")
+    /// Phase 4: Myanmar word segmentation (owner decision: default on).
+    /// `nil` when the lexicon bundle is missing — transcription still works,
+    /// pasting the raw model text (logged at startup).
+    private let segmenter: MMDTSegmenter?
 
     private var transcriber: (any Transcribing)?
     /// Internal so tests can await pipeline completion.
@@ -53,7 +57,24 @@ final class AppState {
         self.settings = settings
         self.recorder = recorder
         self.inserter = inserter
+        let loadedSegmenter: MMDTSegmenter?
+        var segmenterError: String?
+        do {
+            loadedSegmenter = try MMDTSegmenter()
+        } catch {
+            loadedSegmenter = nil
+            segmenterError = String(describing: error)
+        }
+        self.segmenter = loadedSegmenter
+        if let segmenterError {
+            logger.error("word segmentation unavailable: \(segmenterError, privacy: .public)")
+        } else {
+            logger.info("word segmentation ready")
+        }
     }
+
+    /// True when the Phase 4 segmentation lexicon loaded (Settings shows it).
+    var isWordSegmentationAvailable: Bool { segmenter != nil }
 
     // MARK: - Model lifecycle
 
@@ -199,11 +220,17 @@ final class AppState {
         }
     }
 
-    private func completeTranscription(_ text: String) async {
+    private func completeTranscription(_ rawText: String) async {
         transcriptionTask = nil
         if Task.isCancelled {
             phase = .idle
             return
+        }
+        var text = rawText
+        if settings.wordSegmentation, let segmenter {
+            let segmentStart = ContinuousClock.now
+            text = segmenter.segment(text)
+            logger.debug("word segmentation took \(ContinuousClock.now - segmentStart)")
         }
         guard !text.isEmpty else {
             phase = .idle

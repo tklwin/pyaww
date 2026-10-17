@@ -21,6 +21,11 @@ lists live in the phase reports, not here.
 
 ## Owner action
 
+- **Phase 4 word-segmentation check:** the rebuilt `build/Pyaww.app` now
+  segments dictation by default. Dictate once (expect word text like
+  "မင်္ဂလာ ပါ"), flip Settings → Pasting → "Segment Myanmar words" off and
+  compare (raw syllable text), then tick the "Phase 4 re-verify" table in
+  `docs/manual-test-log.md`.
 - **One-time permission re-grant (signing switch):** the rebuilt app is now
   signed with the Apple Development certificate, so macOS asks once more.
   Launch `build/Pyaww.app` and work through the "Phase 3 re-verify" table in
@@ -34,20 +39,16 @@ lists live in the phase reports, not here.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
 
-## Parking lot (awaiting owner decision)
+## Phase 4
 
-- **Word-segmentation post-processing (`mmdt-tokenizer`, MIT).** Evaluated
-  2026-10-17 in a temp venv (Python package stays out of the repo): rule-based
-  grammar pipeline, no statistical model; ~1.1k lines + one 162 KB lexicon
-  JSON → Swift-portable. Measured on our 99 word-spaced gold clips (boundary
-  F1 vs human gold): model raw output 0.27 → `mmdt(despace(model))` 0.33
-  (64 clips better / 31 worse / 4 equal); intrinsic ceiling vs this gold
-  ≈ 0.43. 0/100 clips had any non-space character changed; ~0.4–0.8 ms per
-  clip. Caveats: needs a Burmese-only de-space step first (lexicon matching
-  cannot cross spaces); upstream drops `၊` when present and space-separates
-  `။` (both fixable in a port; today's model output contains neither).
-  SPEC hook already exists: `TextPostProcessor.swift` ("owner specifies
-  rules"). Awaiting owner: goal, style preference, go/no-go.
+- **Word segmentation — implemented (2026-10-17, awaiting owner check).**
+  Swift port of `mmdt-tokenizer` 0.1.3 (MIT) with the approved adaptations;
+  209/209 Python reference vectors exact; Settings toggle (default on);
+  applied after transcription before the paste; `pyaww-cli --segment` /
+  `--segment-text` for inspection (CLI default stays raw). Evidence:
+  `docs/decisions.md` (Phase 4), `docs/performance.md` (cost).
+  Owner check: dictate once with the toggle on, flip it off and compare
+  (`docs/manual-test-log.md` → Phase 4 re-verify).
 
 ## Agent / engineering
 

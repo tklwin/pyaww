@@ -12,12 +12,14 @@ struct AppStateTests {
         maximumDuration: Double = 30,
         transcriberText: String = "မင်္ဂလာပါ",
         transcriberDelay: Duration = .zero,
-        insertionOutcome: InsertionOutcome = .pasted
+        insertionOutcome: InsertionOutcome = .pasted,
+        wordSegmentation: Bool = false
     ) throws -> (AppState, FakeRecorder, FakeTranscriber, FakeInserter) {
         let defaults = try #require(UserDefaults(suiteName: "pyaww-tests-\(UUID().uuidString)"))
         let settings = SettingsStore(defaults: defaults)
         settings.minimumDuration = minimumDuration
         settings.maximumDuration = maximumDuration
+        settings.wordSegmentation = wordSegmentation
         let recorder = FakeRecorder()
         let transcriber = FakeTranscriber(text: transcriberText, delay: transcriberDelay)
         let inserter = FakeInserter()
@@ -177,5 +179,37 @@ struct AppStateTests {
         #expect(state.phase == .idle)
         #expect(inserter.inserted.isEmpty)
         #expect(state.notice != nil)
+    }
+
+    @Test func wordSegmentationDefaultsOn() throws {
+        let defaults = try #require(UserDefaults(suiteName: "pyaww-tests-\(UUID().uuidString)"))
+        let settings = SettingsStore(defaults: defaults)
+        #expect(settings.wordSegmentation)
+    }
+
+    @Test func segmentationAppliesBeforeInsertion() async throws {
+        let (state, recorder, _, inserter) = try makeState(wordSegmentation: true)
+        recorder.samplesToReturn = tone(seconds: 1)
+
+        state.hotkeyPressed()
+        state.hotkeyReleased()
+        await state.recordingStopTask?.value
+        await state.transcriptionTask?.value
+
+        #expect(state.phase == .idle)
+        #expect(state.isWordSegmentationAvailable)
+        #expect(inserter.inserted == ["မင်္ဂလာ ပါ"])
+    }
+
+    @Test func segmentationOffPastesRawText() async throws {
+        let (state, recorder, _, inserter) = try makeState(wordSegmentation: false)
+        recorder.samplesToReturn = tone(seconds: 1)
+
+        state.hotkeyPressed()
+        state.hotkeyReleased()
+        await state.recordingStopTask?.value
+        await state.transcriptionTask?.value
+
+        #expect(inserter.inserted == ["မင်္ဂလာပါ"])
     }
 }

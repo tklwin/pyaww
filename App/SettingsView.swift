@@ -30,6 +30,8 @@ struct SettingsView: View {
             }
 
             Section("Pasting") {
+                Toggle("Segment Myanmar words", isOn: Bindable(model.settings).wordSegmentation)
+                    .help("Joins the model's syllable-by-syllable spacing into words (recommended). Turn off to paste the raw model output.")
                 Toggle("Restore the previous clipboard contents", isOn: Bindable(model.settings).restoreClipboard)
             }
 
@@ -58,6 +60,9 @@ struct SettingsView: View {
 
             Section("Model") {
                 LabeledContent("Status", value: model.state.isModelReady ? "Ready" : "Loading…")
+                LabeledContent(
+                    "Word segmentation",
+                    value: model.state.isWordSegmentationAvailable ? "Ready" : "Unavailable")
                 LabeledContent("Hotkey", value: "Hold \(model.settings.pushToTalkKey.displayName) and speak")
             }
         }

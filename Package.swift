@@ -10,7 +10,9 @@ let package = Package(
         .executable(name: "pyaww-cli", targets: ["PyawwCLI"]),
     ],
     targets: [
-        .target(name: "PyawwCore"),
+        .target(
+            name: "PyawwCore",
+            resources: [.copy("Resources/lexicons.json")]),
         .executableTarget(
             name: "PyawwApp", dependencies: ["PyawwCore"], path: "App",
             exclude: ["Info.plist"]),

@@ -101,6 +101,16 @@ read back only the needed row range and reuse preallocated input arrays
   Monitor "Memory"), RSS 175–187 MB (`ps -o rss=`, shared pages included).
 - Bundle: `du -sh build/Pyaww.app` = 38 MB.
 
+## Phase 4 addendum — word-segmentation cost (measured 2026-10-17)
+
+- `pyaww-cli --segment-text` (release build): segmenter **init 19.3 ms**
+  (lexicon load + regex compile, once at app startup); segmenting the
+  longest corpus text (~350 chars) **3.8 ms**. Per-dictation cost is
+  negligible next to the ~30 ms model call; no SPEC §5.2 target changes.
+- Fidelity: 209/209 exact vs the Python reference vectors; idempotent;
+  only upstream's documented special characters are ever removed
+  (`swift test` → SegmentationTests).
+
 ## Notes / limitations
 
 - App-level measurements are on the owner's machine; latency numbers are

@@ -12,6 +12,7 @@ final class SettingsStore {
         static let maximumDuration = "maximumDuration"
         static let restoreClipboard = "restoreClipboard"
         static let soundCue = "soundCue"
+        static let wordSegmentation = "wordSegmentation"
     }
 
     /// Options offered for the minimum recording length (FR-5, default 0.3 s).
@@ -36,6 +37,11 @@ final class SettingsStore {
     var soundCue: Bool {
         didSet { defaults.set(soundCue, forKey: Key.soundCue) }
     }
+    /// Myanmar word segmentation of the transcription (Phase 4; owner chose
+    /// default on). Off pastes the raw model text.
+    var wordSegmentation: Bool {
+        didSet { defaults.set(wordSegmentation, forKey: Key.wordSegmentation) }
+    }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -45,6 +51,7 @@ final class SettingsStore {
         self.maximumDuration = defaults.object(forKey: Key.maximumDuration) as? Double ?? 30
         self.restoreClipboard = defaults.object(forKey: Key.restoreClipboard) as? Bool ?? true
         self.soundCue = defaults.object(forKey: Key.soundCue) as? Bool ?? false
+        self.wordSegmentation = defaults.object(forKey: Key.wordSegmentation) as? Bool ?? true
     }
 
     /// Mirrors `SMAppService.mainApp`; registration only works when running

@@ -56,3 +56,17 @@ and tick:
 | Menu bar | Menu shows both permissions green (use *Refresh Permission Status* after granting) | |
 | One dictation | Hold Right Option, say a short phrase, release → text pastes at the cursor | |
 | Menu → Quit | app exits cleanly | |
+
+## Phase 4 re-verify — word segmentation (owner)
+
+The app word-segments the transcription by default (Settings → Pasting →
+"Segment Myanmar words"; toggle off = raw model text). The lexicon ships in
+the app bundle, so there are no new permissions. Launch `build/Pyaww.app`:
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| One dictation | Text pastes as words, e.g. "မင်္ဂလာ ပါ" (not "မင်္ဂ လာ ပါ") | |
+| Settings → Pasting → toggle off | Next dictation pastes the raw model text (syllable spacing) | |
+| Toggle back on | Word text again | |
+| Settings → Model | "Word segmentation: Ready" | |
+| Menu → Quit | app exits cleanly | |
