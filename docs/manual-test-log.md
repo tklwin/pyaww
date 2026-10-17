@@ -41,3 +41,18 @@ Environment: macOS 27.0.1 , Mac M2 Air 15" 8GB , commit 70871eb
 | Speak in a password field (secure input) | no synthetic paste; text left on clipboard + menu message |✅ |
 | Clipboard had rich content (image/HTML) | restored after paste |✅ |
 | Menu → Quit while recording | app quits cleanly |✅ |
+
+## Phase 3 re-verify (after signing switch + memory fix)
+
+The app is now signed with the Apple Development certificate (first rebuild
+after the Phase 3 memory fix), so macOS asks for permissions once more — the
+last time. Launch `build/Pyaww.app` (or `./scripts/make-app.sh` then open it)
+and tick:
+
+| Step | Expected | ✅ / notes |
+| --- | --- | --- |
+| First launch | Microphone prompt appears → **Allow** | |
+| Then | Accessibility prompt → **Open System Settings** → enable Pyaww | |
+| Menu bar | Menu shows both permissions green (use *Refresh Permission Status* after granting) | |
+| One dictation | Hold Right Option, say a short phrase, release → text pastes at the cursor | |
+| Menu → Quit | app exits cleanly | |

@@ -226,8 +226,23 @@ become final.
   tests (`pressWhileTranscribingIsIgnored`, `escapeCancelsRecording`).
   Owner confirmed the hotkey set stays Right Option (default) + Right
   Command.
-- **Signing note recorded at Gate 2:** the tested bundle was **ad-hoc
-  signed** (the "Pyaww Local" certificate was never created), but the
-  keychain holds a valid **Apple Development** identity. Any signature
-  change resets Microphone/Accessibility once; decision on switching is in
-  TODO.md.
+- **[OWNER] Signing: Apple Development identity.** `scripts/make-app.sh`
+  now signs with the first *Apple Development* identity
+  ("Apple Development: thein.kyawlwin@icloud.com"), falling back to
+  "Pyaww Local" then ad-hoc. Grants now persist across rebuilds; the switch
+  from the previously ad-hoc bundle requires a one-time re-grant
+  (checklist in `docs/manual-test-log.md`).
+- **Compute units: keep `.all`** (benchmarked per SPEC 6.1, not assumed):
+  27.5 ms p50 vs 58.5 ms cpuOnly vs 82.0 ms cpuAndNeuralEngine on a 4.95 s
+  clip. Numbers: `docs/performance.md`.
+- **Memory bug found by the Phase 3 soak and fixed:** Core ML autoreleased
+  objects accumulated ~4.7 MB per dictation (98.8 → 572.2 MB over 100
+  clips) because the actor executor has no run-loop drain. Explicit
+  `autoreleasepool` per prediction → 300-clip soak plateaus ~107.5 MB with
+  no growth trend. Parity re-verified 100/100 exact afterwards.
+- **Cold start measured 573 ms** in-app (exec → ready ≈ 0.61 s) — target
+  < 2 s.
+- **"Resident memory" definition:** read as Activity Monitor
+  `phys_footprint` (77–88 MB idle; target < 150 MB met). Strict RSS is
+  175–187 MB (shared framework pages included) — owner confirms the
+  reading when approving Gate 3.

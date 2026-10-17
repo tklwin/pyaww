@@ -9,11 +9,18 @@
 | Menu bar app | `./scripts/make-app.sh` | release build → `build/Pyaww.app`, signed |
 | Gate 1 parity | `scripts/run-parity.sh` | one command: build, golden-set run, compare, CER |
 
-## One-time: "Pyaww Local" signing certificate
+## Signing identity
 
-macOS ties Microphone/Accessibility (TCC) grants to the code signature.
-Rebuilding with a *different* signature makes macOS ask again. Create the
-local certificate once, **before granting permissions**:
+`scripts/make-app.sh` signs with, in order of preference:
+
+1. the first **Apple Development** identity in your keychain (owner decision
+   2026-10-17 — stable across rebuilds),
+2. a **"Pyaww Local"** self-signed certificate, or
+3. ad-hoc signing (warns; macOS forgets Microphone/Accessibility grants
+   after every rebuild in this mode).
+
+To create the fallback certificate (only needed on machines without a
+developer identity):
 
 1. Open **Keychain Access** (Applications → Utilities).
 2. Menu **Keychain Access → Certificate Assistant → Create a Certificate…**
@@ -24,9 +31,8 @@ local certificate once, **before granting permissions**:
 4. Click **Create**, then **Done**.
 5. Verify: `security find-identity -v -p codesigning | grep "Pyaww Local"`
 
-`scripts/make-app.sh` signs with this identity when it exists; otherwise it
-falls back to ad-hoc signing and warns (permissions reset on every rebuild
-in that mode).
+macOS ties Microphone/Accessibility (TCC) grants to the code signature;
+switching identities (e.g. ad-hoc → Apple Development) asks for them once.
 
 ## Running
 

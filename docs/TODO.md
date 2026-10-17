@@ -21,20 +21,25 @@ lists live in the phase reports, not here.
 
 ## Owner action
 
-- **Signing identity switch before the next rebuild:** the tested app is
-  ad-hoc signed; any rebuild resets Microphone/Accessibility once. Recommended:
-  point `scripts/make-app.sh` at the existing *Apple Development* identity
-  (stable forever); alternative: create "Pyaww Local" (`docs/build.md`).
-  Either way it is a one-time re-grant.
+- **One-time permission re-grant (signing switch):** the rebuilt app is now
+  signed with the Apple Development certificate, so macOS asks once more.
+  Launch `build/Pyaww.app` and work through the "Phase 3 re-verify" table in
+  `docs/manual-test-log.md` (microphone → Accessibility → one dictation).
+- **Gate 3 approval:** review the numbers in `docs/performance.md`
+  (proposal: "resident memory" = Activity Monitor footprint, 77–88 MB idle;
+  strict RSS is 175–187 MB). Say "Gate 3 passed" once you agree.
+- **Push:** Phase 2 + Phase 3 commits are local only — say the word to
+  `git push origin main`.
 - **Name check for "Pyaww"** (GitHub / web / trademark search) before Phase 4.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
 
 ## Agent / engineering
 
-- **Phase 3 (running):** measure §5.2 targets (latency, cold start, idle
-  CPU, idle memory, crashes in 100 dictations), benchmark compute units,
-  soak test with memory trend, profile hot spots.
+- **Phase 3:** measurements complete (SPEC §5.2 targets, compute-unit
+  benchmark, 100/300-iteration soaks, memory-trend check, `sample`
+  profiling; memory-growth bug found and fixed). Evidence:
+  `docs/performance.md`. Awaiting owner Gate 3.
 - Phase 3+: keep `docs/manual-test-log.md` updated for later re-runs.
 - Dev note: `myanmar_asr/` (Python reference checkout) was deleted after
   Gate 1, owner-approved. Re-clone
