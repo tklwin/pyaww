@@ -412,10 +412,10 @@ become final.
   AppleScript's `set bounds` — the first build lost the race and saved
   its default `{{289, 214}, {920, 464}}` frame, so the 600×400 picture
   sat in a 920-wide window; the uncovered icon-view area shows the
-  default white background. (2) Icon-view items draw ~45 pt *below*
-  their stored y (calibrated with the app icon's self-centering wave:
-  stored y=200 drew at 244.8), so icons landed under the design's arrow
-  line. (3) The saved frame's y is Quartz coordinates (from the screen
+  default white background. (2) Icon-view items draw centred on their stored y; the first reading
+  mis-attributed a "+45 pt below stored" offset to Finder (corrected
+  2026-10-17; icons stored at y=200 simply sat 45 pt under the then
+  design's arrow line at 200). (3) The saved frame's y is Quartz coordinates (from the screen
   bottom) — the reason position values look swapped. (4) macOS 26 keeps
   the Finder status bar despite the saved `ShowStatusBar=false` (kept —
   it reads as a deliberate footer) and gives the `/Applications` symlink
@@ -460,6 +460,31 @@ become final.
   from its own field. White title/arrow/instructions unchanged.
   Verified on a fresh mount: chrome, content and the Finder status bar
   read as one dark surface with the blue icon as the brightest element.
+- **Installer captions: light plates, not suppression (owner request,
+  evening 2026-10-17).** Owner: the black "Pyaww"/"Applications" labels
+  vanish on the dark field — "do white text". Established the rules
+  first: Finder paints its own labels near-black over custom background
+  pictures in **every** system appearance (light- and dark-mode captures
+  agree) and offers no colour control. Suppression attempt —
+  `textSize`/`axTextSize` (one shared bplist real) rewritten to 1 by the
+  structural walker — failed on a test build: values outside Finder's
+  10–16 range make it discard the **whole icvp view state** (flat
+  default background, default icon size, stock white labels). Reverted:
+  the default stays Finder's 13, the walker remains as a harmless
+  structural check, `PYAWW_DS_TEXT_SIZE` stays for experiments only.
+  "Bake a larger white copy so the black glyphs read as white outlines"
+  was rendered with the real font and rejected (uneven fringes — text
+  metrics never align exactly). Ship: the background bakes **light
+  caption plates** (height 25.5 pt, radius 8, width = text + 20, white
+  @ 94 %) at the exact label spots (glyph band bottom-origin 155.5–167
+  pt), so Finder's own black labels sit on them; verified on a fresh
+  mount (chip bbox matches the render, labels centred, no stray ink).
+  `PYAWW_CAPTION_STYLE` selects chip (default) / outline / plain / none.
+  Also corrected the icon-row rationale above: stored y draws the icon
+  *centre* at that y (stored 155 → centre 154.5 measured), so the arrow
+  and glow were raised from 200 to y=245 bottom-origin (= 155 pt from
+  the top) to meet the icons rather than moving the items — revertible
+  if the owner prefers the lower arrow.
 - **[OWNER] Versioning confirmed; release kit landed (2026-10-17).** Owner
   approved the proposal ("yes proceed"): first public release **v0.1.0**
   ("pyaww v0.1.0 (beta)"), Keep-a-Changelog + SemVer,

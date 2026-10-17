@@ -119,4 +119,18 @@ of blue-on-blue. `~/Downloads/Pyaww-0.1.0-arm64.dmg` was refreshed
 (quarantined again); the flow is unchanged, so the ticks above stay
 valid — re-open the new image only to see the polish.
 `dist/Pyaww-0.1.0-arm64.dmg` sha256
-`775a5a6b2971b4668675e4060f5d103a0c78956bfa01ba99d22fe9926a662302`.
+`775a5a6b2971b4668675e4060f5d103a0c78956bfa01ba99d22fe9926a662302`
+(earlier build; superseded by the evening fix below).
+
+**2026-10-17 (evening): caption legibility + arrow placement.** Finder
+paints its item labels near-black over custom background pictures in
+every appearance (no colour control), so the dark field hid them. The
+background now bakes **light plates** under both labels — Finder's own
+black text sits on them and reads crisply — after a `textSize`
+suppression route was tested and rejected (out-of-range values make
+Finder discard the whole saved view state). The arrow and glow also
+moved up 45 pt to meet the icon centres (verified: stored y=155 draws
+the centre at 155). `~/Downloads/Pyaww-0.1.0-arm64.dmg` refreshed again
+(quarantined); the ticks above are unaffected — re-open the new image
+only to see the fix. `dist/Pyaww-0.1.0-arm64.dmg` sha256
+`915d010105aefe51598ace63c4a1fd7cf964f97333894155dc82cd7d8a35ddba`.
