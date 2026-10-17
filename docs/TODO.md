@@ -33,18 +33,24 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon — shape A + colour C4 decided (2026-10-17):** owner kept the
-  voice-ribbon shape and picked C4: white ribbon on azure gradient
-  `#4DA6F4 → #1461E0` (anchor = the Apple-demo blue). Grid-snap spec
-  (centreline ends at 170 / 854, apexes (384,384) / (640,640) sitting on
-  the template diagonal, point-symmetric about the canvas centre, stroke
-  64 = 1/16) drawn for comparison in `Design/Pyaww-Grid-Fit.vectorcraft`
-  (sheet `Design/grid-fit-v1.png`) — owner review pending. Then: rebuild
-  final art in C4 → re-export SVGs → refresh `Design/Pyaww.icon` → owner
-  Icon Composer glass pass → export PNG(s) → bake `Resources/AppIcon.icns`
-  (replaces the interim `./scripts/make-icon.sh` icns). The Apple icon
-  template download stays local-only (`Design/apple-icon-template/` is
-  gitignored; Apple's Design Resources licence bars redistribution).
+- **Icon — shape A + colour C4 locked; grid question settled (2026-10-17):**
+  owner picked C4 (white ribbon on `#4DA6F4 → #1461E0`; fun fact: the
+  anchor blue is literally Apple's demo-bead blue `#4da6f4` inside the
+  template file). Measured from the file itself: the template is an
+  **8×8 grid at 128 px** (lines at 128…896; corrected an earlier 6-cell
+  misreading) and the keyline circles are **d820 / d512 / d204** (not
+  853). The duplicated working file
+  `Design/Pyaww-Icon-Template.vectorcraft` (local-only, gitignored —
+  carries Apple content) has the C4 field painted on Apple's own
+  background path, plus three ribbon candidates drawn on the real grid:
+  OLD hand-tuned (150–884), WIDE 128–896 (apexes on the 384/384 &
+  640/640 grid/diagonal intersections, dead-centre crossing, stroke 64 =
+  half-cell, point-symmetric; recommended), CONTAINED 256–768. Owner
+  pick pending. Then: rebuild final art → re-export layer SVGs → refresh
+  `Design/Pyaww.icon` → owner Icon Composer glass pass → export PNG(s) →
+  bake `Resources/AppIcon.icns` (replaces the interim
+  `./scripts/make-icon.sh` icns). Comparison sheet
+  `Design/template-snap-v1.png` is local-only (Apple template content).
 
 ## Phase 4
 

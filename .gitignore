@@ -28,3 +28,10 @@ Models/**/*.mlmodelc
 # workflow): Apple's license does not permit redistribution, so the icon
 # template download stays local-only.
 Design/apple-icon-template/
+
+# Local working copies derived from Apple's icon template — same rule.
+Design/Pyaww-Icon-Template.ai
+Design/Pyaww-Icon-Template.vectorcraft
+Design/Pyaww-Icon-Draft.ai
+Design/Pyaww-Icon-Draft.vectorcraft
+Design/template-snap-*.png
