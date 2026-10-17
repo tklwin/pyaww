@@ -33,17 +33,18 @@ lists live in the phase reports, not here.
 - **Distribution plan** (personal-only vs sharing with others): discussion
   open (2026-10-17) — owner wants a back-and-forth before deciding; SPEC
   Phase 5 (Developer ID + notarization) stays gated on the outcome.
-- **Icon — final direction confirmed: "A" voice ribbon (2026-10-17):**
-  owner kept A (cream + coral→violet ribbon); the six A-lab studies were
-  not adopted (kept in git as exploration history). Final art re-created
-  clean in `Design/Pyaww-Icon-Final.vectorcraft`; per-layer full-canvas
-  SVGs in `Design/icon-assets/`; a ready-to-open Icon Composer package in
-  `Design/Pyaww.icon/` (ribbon front, background behind, modeled on
-  Apple's demo `icon.json` format). Next: owner tunes glass/appearances
-  in Icon Composer → export PNG(s) → bake into `Resources/AppIcon.icns`
+- **Icon — shape A + colour C4 decided (2026-10-17):** owner kept the
+  voice-ribbon shape and picked C4: white ribbon on azure gradient
+  `#4DA6F4 → #1461E0` (anchor = the Apple-demo blue). Grid-snap spec
+  (centreline ends at 170 / 854, apexes (384,384) / (640,640) sitting on
+  the template diagonal, point-symmetric about the canvas centre, stroke
+  64 = 1/16) drawn for comparison in `Design/Pyaww-Grid-Fit.vectorcraft`
+  (sheet `Design/grid-fit-v1.png`) — owner review pending. Then: rebuild
+  final art in C4 → re-export SVGs → refresh `Design/Pyaww.icon` → owner
+  Icon Composer glass pass → export PNG(s) → bake `Resources/AppIcon.icns`
   (replaces the interim `./scripts/make-icon.sh` icns). The Apple icon
-  template download stays local-only (`.gitignore`; Apple's Design
-  Resources license bars redistribution).
+  template download stays local-only (`Design/apple-icon-template/` is
+  gitignored; Apple's Design Resources licence bars redistribution).
 
 ## Phase 4
 
