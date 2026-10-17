@@ -1,14 +1,23 @@
 #!/bin/sh
-# Regenerates Resources/AppIcon.icns from scripts/make-icon.swift.
+# Regenerates Resources/AppIcon.icns from the final Icon Composer export.
+#
+# Source of truth: "Design/Icon Exports/Icon-iOS-Default-1024@1x.png"
+# (owner's Icon Composer pass, 2026-10-17). The dark/clear/tinted sibling
+# exports in that folder are reference only — the shipping icns carries the
+# default appearance and macOS draws the other appearances itself.
 # Dev tool only — not part of the app. Requires only macOS built-ins
-# (swift, sips, iconutil). Usage: ./scripts/make-icon.sh
+# (sips, iconutil). Usage: ./scripts/make-icon.sh
 set -eu
 cd "$(dirname "$0")/.."
 
+SRC="Design/Icon Exports/Icon-iOS-Default-1024@1x.png"
+if [ ! -f "$SRC" ]; then
+    echo "error: $SRC not found (Icon Composer export)" >&2
+    exit 1
+fi
+
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
-
-swift scripts/make-icon.swift "$TMP/icon-1024.png"
 
 SET="$TMP/AppIcon.iconset"
 mkdir -p "$SET"
@@ -20,10 +29,10 @@ for spec in \
     512:icon_512x512; do
     px=${spec%%:*}
     name=${spec#*:}
-    sips -z "$px" "$px" "$TMP/icon-1024.png" --out "$SET/$name.png" >/dev/null
+    sips -z "$px" "$px" "$SRC" --out "$SET/$name.png" >/dev/null
 done
-# The 1024 render doubles as the macOS "512@2x" art.
-cp "$TMP/icon-1024.png" "$SET/icon_512x512@2x.png"
+# The 1024 export doubles as the macOS "512@2x" art.
+cp "$SRC" "$SET/icon_512x512@2x.png"
 
 mkdir -p Resources
 iconutil -c icns "$SET" -o Resources/AppIcon.icns

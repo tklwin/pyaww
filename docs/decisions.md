@@ -354,3 +354,20 @@ become final.
   **diagonally**, top-left `#4DA6F4` → bottom-right `#1461E0`
   (`x1,y1,x2,y2 = 0,0,1024,1024`, `userSpaceOnUse`). Owner does the Icon
   Composer glass pass next; then bake `Resources/AppIcon.icns`.
+- **[OWNER] Final app icon delivered — icns baked (2026-10-17).** Owner
+  finished the Icon Composer pass and exported six 1024 px appearances to
+  `Design/Icon Exports/` (Default / Dark / TintedLight / TintedDark /
+  ClearLight / ClearDark, Icon Composer's export naming). The Default
+  export already carries the macOS squircle mask (corners verified
+  transparent); it shows the white glass wave on the azure field with the
+  soft shadow the Icon Composer pass added. `Resources/AppIcon.icns` is
+  baked from it via `./scripts/make-icon.sh`, which was repointed at the
+  export — the interim `scripts/make-icon.swift` glyph renderer was
+  removed. The dark/clear/tinted variants stay in the repo as reference;
+  embedding appearance variants would need actool, which this CLT-only
+  machine lacks, so the shipping path is the legacy icns + system-drawn
+  appearances. The source package lives at
+  `Design/pyaww-icon-composer.icon` (Icon Composer automatic-gradient field
+  from the ribbon blue + glass/refractivity ribbon settings); superseded
+  lab drafts and the hand-made `Design/Pyaww.icon` package were removed
+  from the repo (kept in git history).

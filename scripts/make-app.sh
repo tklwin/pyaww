@@ -31,7 +31,7 @@ for f in "${CONSTANTS[@]}"; do
     cp "Models/$f" "$APP_DIR/Contents/Resources/Models/"
 done
 
-# App icon (draft 2026-10-17; regenerate with scripts/make-icon.sh).
+# App icon — final art 2026-10-17 (owner Icon Composer export; regenerate with scripts/make-icon.sh).
 ICON="Resources/AppIcon.icns"
 if [ ! -f "$ICON" ]; then
     echo "error: $ICON not found — run scripts/make-icon.sh" >&2
