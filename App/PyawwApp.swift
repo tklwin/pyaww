@@ -42,6 +42,8 @@ final class AppModel {
     let state: AppState
 
     private let logger = Logger(subsystem: "com.tklwin.pyaww", category: "app")
+    /// Reference point for the cold-start measurement (Phase 3 target).
+    private let launchTime = ContinuousClock.now
     private var modelLoadTask: Task<Void, Never>?
 
     init() {
@@ -107,7 +109,11 @@ final class AppModel {
                 // the full feature + Core ML path and primes the ANE.
                 _ = try? await transcriber.transcribe(samples: [Float](repeating: 0, count: 16_000))
                 state.modelDidLoad(transcriber)
-                self.logger.info("model ready")
+                // Notice level so the line is persisted and measurable via
+                // `log show` (Phase 3 cold-start evidence).
+                let elapsed = self.launchTime.duration(to: .now).components
+                let readyMs = Double(elapsed.seconds) * 1000 + Double(elapsed.attoseconds) / 1e15
+                self.logger.notice("model ready after \(Int(readyMs)) ms")
             } catch {
                 self.logger.error("model load failed: \(String(describing: error), privacy: .public)")
                 state.modelLoadFailed(String(describing: error))

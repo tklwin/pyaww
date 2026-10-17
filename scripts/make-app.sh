@@ -31,14 +31,20 @@ for f in "${CONSTANTS[@]}"; do
     cp "Models/$f" "$APP_DIR/Contents/Resources/Models/"
 done
 
-IDENTITY="Pyaww Local"
-if security find-identity -v -p codesigning 2>/dev/null | grep -q "$IDENTITY"; then
+# Owner decision (2026-10-17): sign with the Apple Development identity so
+# Microphone/Accessibility grants persist across rebuilds. Fallbacks:
+# "Pyaww Local" self-signed (guide in docs/build.md), then ad-hoc.
+IDENTITY=$(security find-identity -v -p codesigning 2>/dev/null | sed -n 's/.*"\(Apple Development: [^"]*\)".*/\1/p' | head -1)
+if [ -z "$IDENTITY" ]; then
+    IDENTITY=$(security find-identity -v -p codesigning 2>/dev/null | sed -n 's/.*"\(Pyaww Local\)".*/\1/p' | head -1)
+fi
+if [ -n "$IDENTITY" ]; then
     codesign --force --sign "$IDENTITY" "$APP_DIR"
     echo "signed with \"$IDENTITY\""
 else
-    echo "warning: \"$IDENTITY\" identity not found — falling back to ad-hoc signing."
+    echo "warning: no stable code-signing identity found — falling back to ad-hoc signing."
     echo "warning: macOS will forget Microphone/Accessibility grants after every rebuild."
-    echo "warning: see docs/build.md to create the certificate (one-time, 5 clicks)."
+    echo "warning: see docs/build.md (Apple Development or \"Pyaww Local\" certificate)."
     codesign --force --sign - "$APP_DIR"
 fi
 
