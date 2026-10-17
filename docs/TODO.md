@@ -5,6 +5,8 @@ lists live in the phase reports, not here.
 
 ## Recently closed (recorded in docs/decisions.md)
 
+- ✅ **Settings window fronting (2026-10-17):** owner confirmed the window
+  comes to the front on the first click; fix `a97c499` pushed.
 - ✅ **Gate 3 (2026-10-17):** owner reviewed `docs/performance.md`
   (resident memory = Activity Monitor footprint, 77–88 MB idle) and ticked
   the Phase 3 re-verify table; the Phase 4 word-segmentation table is ticked
@@ -28,10 +30,6 @@ lists live in the phase reports, not here.
 - **Name check for "Pyaww"** (GitHub / web / trademark search) before Phase 4.
 - **License for Pyaww's own code** (the model itself is Apache-2.0): decide
   at Phase 4.
-- **Settings window re-test (final fix):** quit any running Pyaww first,
-  launch the rebuilt `build/Pyaww.app`, then menu → *Settings…* with
-  another app in front — the window should come to the front immediately
-  (see the new section in `docs/manual-test-log.md`).
 
 ## Phase 4
 

@@ -80,6 +80,6 @@ launch the rebuilt `build/Pyaww.app`:
 
 | Step | Expected | ✅ / notes |
 | --- | --- | --- |
-| Put another app in front, then menu → *Settings…* | Settings window appears **in front** immediately | |
-| Switch to another app, then menu → *Settings…* again | window comes back to the front | |
-| Menu → Quit | app exits cleanly | |
+| Put another app in front, then menu → *Settings…* | Settings window appears **in front** immediately |✅ |
+| Switch to another app, then menu → *Settings…* again | window comes back to the front |✅ |
+| Menu → Quit | app exits cleanly |✅ |

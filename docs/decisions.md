@@ -308,5 +308,10 @@ become final.
   activates it, after which the window becomes key. Final wiring:
   `SettingsWindow.activateApp()` → `openSettings()` → bounded retry raising
   the window; a belt repeats this in `SettingsView.onAppear`.
+  **[OWNER] Verified (2026-10-17):** the window comes to the front on the
+  first click; re-verify table ticked in `docs/manual-test-log.md`.
 - **Push approved + done (2026-10-17):** `e0398b4`, `9e972e8` and the
   Gate 3 / Settings-window commits are on `origin/main`.
+- **Settings fix pushed (2026-10-17):** after owner verification, `a97c499`
+  (fronting fix + test-runner `TestingMacros` plugin-path flags + docs) is
+  on `origin/main`.
