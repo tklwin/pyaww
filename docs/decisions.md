@@ -546,3 +546,57 @@ become final.
 - **Footer GitHub link (owner request, 2026-10-18).** Opens
   `github.com/tklwin/pyaww` in the browser on click; the app itself still
   makes no network requests (SPEC §1 unchanged).
+
+## Marketing site (2026-10-18)
+
+- **[OWNER] Bilingual landing page, live at tklwin.github.io/pyaww/.**
+  Hand-written static HTML/CSS/JS — no dependencies, no external
+  requests, system fonts — living in `site/` in this repository and
+  published by GitHub Pages (`.github/workflows/pages.yml`, path-filtered
+  to `site/**`, so releases never redeploy it). The repository's homepage
+  field points here; `docs/website.md` carries the maintenance rules.
+- **Moved to this repo at the same URL.** First published from the
+  personal site (`tklwin.github.io/static/pyaww/`), then moved so the
+  page versions with the app: the project-site URL is exactly
+  `tklwin.github.io/pyaww/`, so nothing changed for visitors. The old
+  copy was removed only after the new one was verified live (the URL
+  never went dark) and the personal site's "apps" nav link still
+  resolves. Do not re-add `static/pyaww/` there.
+- **Myanmar copy is owner-reviewed and now frozen.** Two passes: a full
+  rewrite in a spoken register modelled on the Talk2Notion knowledge base
+  (short sentences, `ပါတယ်/ပါ` endings, English technical terms kept
+  English, honest "ဒါ ပုံမှန်ပါပဲ"-style friction notes), then the owner's
+  exact replacements — the tagline
+  "စာရိုက်နေစရာမလို၊ မြန်မာလိုပဲ ပြောလိုက်ပါ။", five feature-card titles in
+  the owner's short-noun-phrase (`…ခြင်း`) style, and the "Ready at login"
+  card body — integrated verbatim. Future `.my` changes need the owner's
+  check before pushing.
+- **No guide/help section (owner).** A guide (Quick start) was built and
+  removed before any commit — owner: "we don't need guide actually… just
+  don't add guide"; the page stays one landing page because "the app is
+  so clean and easy to setup".
+- **The red wave sits in a keycap tile like its neighbours (owner).**
+  Step 2 of "How it works" first showed a floating red dot; the owner
+  asked for a red wave "with button padding as others to match", so it
+  now shares the keycap tile, border, gradient and padding with the ⌥
+  and ↵ cards, drawn in `#ff453a` with a soft pulse (reduced-motion
+  aware).
+- **Wave geometry has one source of truth — `App/MenuBarIcon.swift`.**
+  Hero, header mark, favicon and share card all draw the icon's "B" path
+  (rises first: 570.6667 → 394.6667 → 629.3333 → 453.3333). An early page
+  wave was horizontally mirrored; every copy was corrected and compared
+  against the icon export. Never mirror it.
+- **Assets are captures of the app itself (owner rule).** `panel.png` is
+  the real panel; no personal screen content appears anywhere on the
+  page. Icon exports come from `Design/Icon Exports/`; the 1200×630 share
+  card is rendered from `docs/og-card.html` (self-contained). Its Myanmar
+  line still carried the pre-approval tagline and was updated to the
+  owner's tagline during the 2026-10-18 housekeeping pass, so card and
+  hero now match.
+- **Promo video: draft built, owner parked it.** A 19 s 1920×1080 H.264
+  draft was rendered in EffectCraft; the owner stopped the direction
+  ("just leave it video now") and no audio pass exists. Project + draft
+  are preserved at `~/Movies/pyaww-promo/`; do not resume unless asked.
+- **Dev-only `PYAWW_SHOW_PANEL` hook added then dropped.** It forced the
+  panel visible for captures; the owner said drop it, the branch was
+  reset to `origin/main`, and no release contains it.

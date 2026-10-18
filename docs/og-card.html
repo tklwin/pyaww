@@ -1,0 +1,47 @@
+<!--
+  Source for site/assets/og.png (1200 × 630 share card).
+  This file is not published: GitHub Pages serves only site/.
+  The card is self-contained (inline SVG wave, system fonts), so it
+  renders straight from the repo — see docs/website.md for the recipe.
+  Keep the Myanmar line identical to the hero tagline in site/index.html.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin:0; padding:0; width:1200px; height:630px; overflow:hidden; background:#07070b; }
+  body { font:16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Myanmar", "Myanmar Sangam MN", sans-serif; color:#eef0f6; }
+  .card { position:relative; width:1200px; height:630px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+  .glow { position:absolute; inset:0;
+    background:
+      radial-gradient(620px 320px at 50% 24%, rgba(77,166,244,.17), transparent 70%),
+      radial-gradient(900px 520px at 50% 118%, rgba(20,97,224,.13), transparent 72%);
+  }
+  .wave { width:360px; margin-bottom:26px; filter:drop-shadow(0 0 30px rgba(77,166,244,.35)); }
+  h1 { margin:0; font-size:64px; font-weight:700; letter-spacing:-.02em; }
+  h1 .mm { font-weight:400; color:rgba(238,240,246,.66); font-size:.72em; }
+  .tag { margin:14px 0 0; font-size:25px; font-weight:500; }
+  .tag-mm { margin:6px 0 0; font-size:21px; color:rgba(238,240,246,.6); line-height:1.9; }
+  .foot { position:absolute; bottom:34px; width:100%; text-align:center; font-size:15px; color:rgba(238,240,246,.42); letter-spacing:.02em; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="glow"></div>
+    <svg class="wave" viewBox="118 352.6667 788 318.6667" aria-hidden="true">
+      <defs>
+        <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#58A8F8"/>
+          <stop offset="1" stop-color="#1461E0"/>
+        </linearGradient>
+      </defs>
+      <path d="M160 570.6667 C277.3333 570.6667 277.3333 394.6667 394.6667 394.6667 C512 394.6667 512 629.3333 629.3333 629.3333 C746.6667 629.3333 746.6667 453.3333 864 453.3333" fill="none" stroke="url(#wg)" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>Pyaww <span class="mm">(ပြော)</span></h1>
+    <p class="tag">Speak Myanmar. It just types.</p>
+    <p class="tag-mm">စာရိုက်နေစရာမလို၊ မြန်မာလိုပဲ ပြောလိုက်ပါ။</p>
+    <div class="foot">tklwin.github.io/pyaww&nbsp;&nbsp;·&nbsp;&nbsp;free&nbsp;&nbsp;·&nbsp;&nbsp;fully offline&nbsp;&nbsp;·&nbsp;&nbsp;macOS</div>
+  </div>
+</body>
+</html>

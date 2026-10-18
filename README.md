@@ -112,6 +112,13 @@ tccutil reset Microphone com.tklwin.pyaww
 tccutil reset Accessibility com.tklwin.pyaww
 ```
 
+## Website
+
+The bilingual landing page — <https://tklwin.github.io/pyaww/> — is
+hand-written and lives in [`site/`](site/), published by GitHub Pages
+whenever that folder changes. Maintainer notes (copy rules, the wave
+geometry, previewing and publishing): [`docs/website.md`](docs/website.md).
+
 ## License and credits
 
 Pyaww's own code is [MIT licensed](LICENSE), © 2026 Thein Kyaw Lwin.

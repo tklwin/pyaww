@@ -5,6 +5,13 @@ lists live in the phase reports, not here.
 
 ## Recently closed (recorded in docs/decisions.md)
 
+- ✅ **Marketing site + launch (2026-10-18):** bilingual landing page live
+  at <https://tklwin.github.io/pyaww/> — served from `site/` by the
+  `pages.yml` workflow, moved here from the personal site repo at the same
+  URL; owner-reviewed Burmese copy (tagline + feature titles frozen), real
+  panel capture, icon, and share card. Repo homepage field points at it.
+  Details: `docs/decisions.md` ("Marketing site"); maintenance:
+  `docs/website.md`.
 - ✅ **Gate 4 rehearsal (2026-10-17):** owner ticked all 8 steps in
   `docs/manual-test-log.md` — clean install from the README alone
   (Gatekeeper *Open Anyway*, fresh permission prompts, first dictation,
@@ -55,14 +62,23 @@ lists live in the phase reports, not here.
   Versioning confirmed: first release `v0.1.0` ("pyaww v0.1.0 (beta)").
   Gate 4 rehearsal green (log ticked); the installer window fixed and
   the field re-tinted dark ink so the full-bleed badge pops.
-  Next: the publish go-ahead (`git push origin main`, tag, release).
-  SPEC Phase 5 notarization/CI stay optional.
+  Shipped: tag + GitHub release `v0.1.0` (DMG on Releases), and the
+  landing page is live at <https://tklwin.github.io/pyaww/>. SPEC Phase 5
+  notarization/CI stay optional.
 - **Icon fill: decided (2026-10-17).** Measured truth: our icns is
   100 % full-bleed (Icon Composer's iOS export) while the reference apps
   ship classic ~80–88 % canvases; the Settings plate is the legacy
   renderer re-seating full-bleed art. **Owner: keep full-bleed** — the
   DMG background instead went dark ink (+ azure glow) so the blue badge
   pops.
+- **Next version: scope not chosen (2026-10-18).** v0.1.0 shipped and the
+  website is live; pick `v0.1.1` (fixes only) vs `v0.2.0` (features)
+  before development resumes. The site versions independently — only
+  pushes touching `site/**` redeploy it.
+- **Promo video: parked (2026-10-18).** The 19 s draft did not pass the
+  owner's look review ("just leave it video now"); no audio pass was made.
+  Project + draft preserved at `~/Movies/pyaww-promo/` — resume only on
+  request; do not ship the draft.
 
 ## Phase 4
 
@@ -76,8 +92,7 @@ lists live in the phase reports, not here.
 - **Gate 4 close-out (2026-10-17):** `README.md`, `CHANGELOG.md` and the
   DMG kit (`scripts/make-dmg.sh`, `scripts/make-dmg-background.swift`,
   `scripts/patch-ds-store.py`) are in. Rehearsal green (log ticked) and
-  the installer window fixed; remaining: the publish go-ahead
-  (`git push` + `gh release create v0.1.0`).
+  the installer window fixed; shipped as `v0.1.0` (tag + GitHub release).
 
 ## Agent / engineering
 

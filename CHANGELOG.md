@@ -6,6 +6,12 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Project website: a bilingual (English / မြန်မာ) landing page at
+  <https://tklwin.github.io/pyaww/>, written by hand and published from
+  `site/` by GitHub Pages; the social card carries the same tagline
+
 ## [0.1.0] - 2026-10-18
 
 First public beta: hold a modifier key, speak Myanmar, release — the text
