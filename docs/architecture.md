@@ -1,9 +1,9 @@
 # Pyaww architecture
 
-Status: **initial, written at Phase 0** — it records what we know after
-inspecting the real model asset. It will be kept current as phases land.
-The authoritative spec is `SPEC.md` §4; this doc adds the as-built
-decisions and changes that inspection revealed.
+Status: **as built at v0.1.0** — Phase 0 inspection, Phase 1 core, Phase 2
+shell, Phase 3 measurements and Phase 4 panel/packaging are recorded below.
+The authoritative spec is `SPEC.md` §4; this doc holds the as-built
+decisions and the changes that inspection and the build revealed.
 
 ## Product shape
 
@@ -12,8 +12,9 @@ decisions and changes that inspection revealed.
   No AppKit/SwiftUI imports, fully unit-testable.
 - **pyaww-cli** — thin executable: `pyaww-cli file.wav` → prints text.
   Same pipeline, CLI front-end, also the parity/benchmark harness.
-- **Pyaww app** — SwiftUI `MenuBarExtra` shell: recorder, hotkey, text
-  inserter, permissions, settings, state machine.
+- **Pyaww app** — AppKit `NSStatusItem` + hosted SwiftUI popover: recorder,
+  hotkey, text inserter, permissions, one panel (settings included), state
+  machine.
 
 ## Data flow (v1)
 
@@ -140,6 +141,9 @@ CER compares both to the owner's ground-truth transcripts (§5.3).
 
 ## App shell (Phase 2, as-built)
 
+*Historical: the menu and the Settings window were retired in Phase 4 —
+the current shell is in "Phase 3–4 as built" below.*
+
 ```
 App/
   PyawwApp.swift           @main + MenuBarExtra/Settings scenes + AppModel (composition root)
@@ -163,3 +167,53 @@ App/
   `body` directly.
 - `AppState` is protocol-driven (`AudioRecording`, `Transcribing`,
   `TextInserting`) and covered by `Tests/PyawwAppTests` with fakes.
+
+## Phase 3–4 as built
+
+**Performance and robustness (Phase 3).** Measured on the owner's M2:
+median key-release → paste ~30 ms (target < 300 ms), cold start 0.57 s,
+idle CPU 0.0 %, idle memory 77–88 MB (Activity Monitor footprint; strict
+RSS is higher and documented), 38 MB bundle, zero crashes across the 100-
+and 300-dictation soaks. Compute units stay `.all`: 27.5 ms p50 vs 58.5 ms
+`.cpuOnly` and 82.0 ms `.cpuAndNeuralEngine`. The soak caught a Core ML
+autorelease leak; `ModelRunner` now wraps each prediction in an
+`autoreleasepool` and memory plateaus (~107.5 MB). Evidence:
+`docs/performance.md`.
+
+**One panel, own status item (Phase 4).** The menu and the Settings window
+were retired: `MenuBarExtra(.window)` pinned its square window to the
+screen corner, so `MenuBarController` hosts an `NSPopover` on an
+`NSStatusItem` and macOS anchors the rounded panel under the wave. Both
+mouse buttons toggle it; a same-click reopen after a transient close is
+guarded. Current shell:
+
+```
+App/
+  PyawwApp.swift           @main PyawwAppDelegate + AppModel (composition root)
+  MenuBarController.swift  NSStatusItem + NSPopover (both buttons toggle)
+  MenuBarIcon.swift        the icon's wave drawn at runtime: template idle/
+                           transcribing, red while recording
+  MenuPanelView.swift      one card panel: header; Permissions; Dictation;
+                           Pasting; Feedback; Model; footer (version, GitHub, Quit)
+  PanelComponents.swift    shared card/row/button styles
+  AppState.swift           state machine: idle/recording/transcribing/error (+ notice)
+  AudioRecorder.swift      AVAudioEngine tap → preallocated buffer → 16 kHz mono on stop
+  HotkeyManager.swift      NSEvent global+local monitors; PushToTalkKey (Right Option default)
+  TextInserter.swift       pasteboard snapshot → ⌘V CGEvent → restore; secure-input aware
+  PermissionsManager.swift mic + Accessibility status, prompts, System Settings deep links
+  SettingsStore.swift      UserDefaults settings (+ SMAppService launch-at-login)
+  Info.plist               LSUIElement, com.tklwin.pyaww, microphone usage string
+```
+
+**Myanmar word segmentation.** A Swift port of `mmdt-tokenizer` 0.1.3 lives
+in `Sources/PyawwCore/Segmentation/`; `AppState` applies it after
+transcription and before pasting (toggle in the Dictation card, default
+on; `pyaww-cli --segment` for inspection).
+
+**Packaging and release.** `scripts/make-app.sh` assembles and signs the
+bundle ("Apple Development: thein.kyawlwin@icloud.com", 8V26KMJK68);
+`scripts/make-dmg.sh` builds the 600 × 400 installer window and
+`scripts/patch-ds-store.py` fixes the stored icon positions for Finder.
+v0.1.0 shipped as a non-notarized DMG on GitHub Releases
+with the README's Gatekeeper steps; the landing page is documented in
+`docs/website.md`.
