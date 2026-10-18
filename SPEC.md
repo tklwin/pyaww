@@ -2,6 +2,12 @@
 
 *Spec-driven development brief for an AI coding agent. Version 1.0.*
 
+> **Status (2026-10-18):** v0.1.0, the first public beta, is shipped —
+> Phases 0–4 are complete with every gate passed; Phase 5 (notarization,
+> CI) was not taken. This file remains the original build brief; the
+> as-built record lives in `docs/decisions.md` and `docs/TODO.md`, and the
+> landing page is documented in `docs/website.md`.
+
 ## 0. How to use this document
 
 You are an AI coding agent building a small native macOS app. This document is the source of truth. Rules:
@@ -46,13 +52,17 @@ If you believe a non-goal is needed, ask first.
 ### Name and identifiers
 
 - **App name:** Pyaww. Burmese: ပြော ("to speak"). Pronounced "p-yaw", IPA /pjɔ̀/. The double w is a stylistic choice and does not change the sound. Show the Burmese spelling ပြော in the UI and README.
-- **Bundle ID:** `com.yourname.pyaww` \[INPUT NEEDED: owner's reverse-domain prefix\]. Set it once and never change it. macOS ties Microphone and Accessibility permissions to the bundle ID and signing identity, so changing either resets them.
+- **Bundle ID:** `com.tklwin.pyaww` (owner prefix, decided in Phase 0). Set it once and never change it. macOS ties Microphone and Accessibility permissions to the bundle ID and signing identity, so changing either resets them.
 - **Names in code:** core library `PyawwCore`, command line tool `pyaww-cli`, app target `Pyaww`, test target `PyawwCoreTests`, menu bar title "Pyaww".
 - **Name check:** before Phase 4, the owner searches GitHub, the web, and trademark databases for collisions with "Pyaww".
 
 ## 2. Inputs the owner must provide
 
 The agent cannot proceed past Phase 0 without these. Ask for any that are missing.
+
+> **Resolved in Phase 0.** The table is kept as the original checklist;
+> the authoritative model and front-end values are documented in
+> `docs/model-spec.md`.
 
 | # | Input | Status |
 | --- | --- | --- |
@@ -81,7 +91,7 @@ The agent cannot proceed past Phase 0 without these. Ask for any that are missin
 
 - **Where v1 is built:** locally on the owner's Mac (Apple Silicon M2, 8 GB RAM). No CI is needed for v1. The build must succeed within 8 GB of RAM.
 - **Toolchain:** start with Command Line Tools only (`xcode-select --install`) and build with SwiftPM (`swift build -c release`). Install full Xcode only if blocked, and tell the owner why. Check `xcrun --find coremlc`: if it is missing, compile the model on first launch with `MLModel.compileModel(at:)` and cache the compiled model in Application Support.
-- **One build script:** `scripts/build-app.sh` builds in release mode, assembles `Pyaww.app` (Info.plist with `LSUIElement` and usage descriptions, the model resource, the icon) and signs it. Local builds and any later CI use this same script.
+- **One build script:** `scripts/make-app.sh` builds in release mode, assembles `Pyaww.app` (Info.plist with `LSUIElement` and usage descriptions, the model resource, the icon) and signs it. Local builds and any later CI use this same script.
 - **Signing:** use one stable identity locally (a free personal development certificate or a self-signed one) and record which in `docs/decisions.md`. Never change it between builds, or macOS resets the Microphone and Accessibility permissions.
 - **CI is optional and belongs to Phase 5:** a GitHub Actions macOS runner can run the same script to build, sign, notarize and attach a release. That needs a paid Apple Developer account and signing secrets stored as repository secrets. Do not set it up unless the owner asks.
 
@@ -277,7 +287,7 @@ Do not skip gates. At each gate, stop, report, and wait for owner confirmation.
 
 ### Phase 5 (optional, only if owner asks)
 
-Developer ID signing and notarization for sharing; a GitHub Actions build and release workflow that runs scripts/build-app.sh; additional features from the non-goals list.
+Developer ID signing and notarization for sharing; a GitHub Actions build and release workflow that runs `scripts/make-app.sh`; additional features from the non-goals list.
 
 ## 8. Guardrails: what the agent must never do
 
@@ -336,8 +346,13 @@ Automated benchmark in the CLI: run N=50 inferences on 5 s audio, report median 
 - `docs/architecture.md`: the module diagram and data flow, kept current.
 - `docs/decisions.md`: short log of decisions (hotkey method, compute units, insertion method) with reasons.
 - `docs/manual-test-log.md` and the latest benchmark results.
+- `docs/website.md`: the landing page — hosting, copy rules, assets and
+  the social card (added 2026-10-18).
 
 ## 12. Definition of done (v1)
+
+Shipped as v0.1.0 on 2026-10-18; the gate evidence is recorded in
+`docs/TODO.md`, `docs/performance.md` and `docs/manual-test-log.md`.
 
 - [ ] Parity gate passes on the full golden set with one command.
 - [ ] End-to-end dictation works in the full app matrix.
