@@ -81,7 +81,7 @@ The agent cannot proceed past Phase 0 without these. Ask for any that are missin
 - **Hardware:** Apple Silicon only (arm64).
 - **OS:** macOS 14 (Sonoma) or later. \[Owner may change.\]
 - **Language:** Swift (latest stable toolchain), Swift concurrency (`async/await`, actors) for new code.
-- **UI:** SwiftUI with `MenuBarExtra`. Use AppKit only where SwiftUI cannot do the job (global hotkey, key events, pasting).
+- **UI:** SwiftUI hosted by AppKit — `NSStatusItem` + `NSPopover` with a SwiftUI panel (`MenuPanelView`). AppKit where SwiftUI cannot do the job (global hotkey, key events, pasting). `MenuBarExtra` was tried first and rejected in Phase 4 (see `docs/decisions.md`).
 - **ML:** Core ML. Audio: `AVAudioEngine`. DSP: `Accelerate` (vDSP).
 - **Build:** Swift Package Manager plus the build script in "Build and release". An Xcode project is optional.
 - **Dependencies:** **None** third-party by default. Apple frameworks only. Any third-party package requires owner approval, with a stated reason, license, and size.
@@ -115,7 +115,11 @@ Pyaww/
   Tests/
     PyawwCoreTests/          <- unit + parity tests + golden WAVs
   App/
-    PyawwApp.swift           - MenuBarExtra entry
+    PyawwApp.swift           - @main PyawwAppDelegate + AppModel (composition root)
+    MenuBarController.swift  - NSStatusItem + NSPopover hosting the panel
+    MenuBarIcon.swift        - the wave drawn at runtime: template idle/transcribing, red recording
+    MenuPanelView.swift      - one card panel: permissions, dictation, pasting, feedback, model, footer
+    PanelComponents.swift    - shared card/row/button styles
     AudioRecorder.swift      - mic capture (AVAudioEngine)
     HotkeyManager.swift      - push-to-talk key down/up
     TextInserter.swift       - paste into focused app
@@ -138,7 +142,8 @@ Pyaww/
 hotkey down -> start recording -> hotkey up -> stop recording
  -> samples (16 kHz mono Float32)
  -> FeatureExtractor -> ModelRunner (CoreML) -> Decoder -> Tokenizer
- -> TextPostProcessor -> TextInserter (paste) -> idle
+ -> TextPostProcessor -> (optional) Myanmar word segmentation
+ -> TextInserter (paste) -> idle
 ```
 
 ## 5. Requirements
@@ -147,7 +152,7 @@ hotkey down -> start recording -> hotkey up -> stop recording
 
 | ID | Requirement |
 | --- | --- |
-| FR-1 | Menu bar app with no Dock icon (`LSUIElement`). Menu shows status, settings, and Quit. |
+| FR-1 | Menu bar app with no Dock icon (`LSUIElement`). The wave opens one panel with status, settings, and Quit. |
 | FR-2 | Push-to-talk: recording runs while the hotkey is held. Default hotkey is configurable (suggest a modifier key such as Right Option, or a key combination). |
 | FR-3 | On release, transcribe and paste the text at the cursor in the focused app. |
 | FR-4 | Pressing Esc while recording cancels with no paste. |
