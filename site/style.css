@@ -111,12 +111,12 @@ h2{margin:0 0 12px; font-size:clamp(24px, 3.4vw, 30px); letter-spacing:-.01em; f
   border-radius:12px; font-size:24px; font-weight:600; color:var(--ink);
   box-shadow:0 3px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07);
 }
-.reddot{
-  width:16px; height:16px; border-radius:50%; background:var(--red);
-  box-shadow:0 0 0 6px rgba(255,69,58,.14), 0 0 20px rgba(255,69,58,.55);
-  animation:pulse 2.1s ease-in-out infinite;
+.wave-red{width:38px; height:auto; display:block}
+.wave-red path{animation:recpulse 2.1s ease-in-out infinite}
+@keyframes recpulse{
+  0%,100%{filter:drop-shadow(0 0 4px rgba(255,69,58,.45))}
+  50%{filter:drop-shadow(0 0 9px rgba(255,69,58,.7))}
 }
-@keyframes pulse{0%,100%{box-shadow:0 0 0 6px rgba(255,69,58,.14), 0 0 20px rgba(255,69,58,.55)}50%{box-shadow:0 0 0 10px rgba(255,69,58,.07), 0 0 26px rgba(255,69,58,.7)}}
 
 /* ---- panel shot ---- */
 .panel-sec{max-width:var(--max); margin:0 auto; padding:76px 28px 0; text-align:center}
