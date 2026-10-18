@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="118 352.6667 788 318.6667">
+  <title>Pyaww</title>
+  <defs>
+    <linearGradient id="pyaww-wave" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#58A8F8"/>
+      <stop offset="1" stop-color="#1461E0"/>
+    </linearGradient>
+  </defs>
+  <path d="M160 570.6667 C277.3333 570.6667 277.3333 394.6667 394.6667 394.6667 C512 394.6667 512 629.3333 629.3333 629.3333 C746.6667 629.3333 746.6667 453.3333 864 453.3333"
+        fill="none" stroke="url(#pyaww-wave)" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
