@@ -1,0 +1,87 @@
+name: Bug report
+description: Report a problem with the Pyaww beta
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing Pyaww. The tester guide
+        ([docs/beta.md](https://github.com/tklwin/pyaww/blob/main/docs/beta.md))
+        lists the standard checks and known issues.
+
+        Pyaww is local-only: logs contain timings and errors, never audio
+        or transcribed text. Please still review anything you paste here.
+
+  - type: input
+    id: version
+    attributes:
+      label: Pyaww version
+      description: Shown in the panel footer.
+      placeholder: "pyaww v0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: Apple menu → About This Mac.
+      placeholder: "macOS 15.6"
+    validations:
+      required: true
+
+  - type: input
+    id: chip
+    attributes:
+      label: Mac model and chip
+      placeholder: "MacBook Air M2, 8 GB"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you do, in order?
+      placeholder: |
+        1. Click the wave
+        2. Hold Right Option and say ...
+        3. Release
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Screenshots are welcome for visual problems.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: |
+        Run: log show --last 15m --predicate 'subsystem == "com.tklwin.pyaww"' --info --debug
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I read the known issues in docs/beta.md.
+          required: true
+        - label: I removed any personal text from screenshots and logs.
+          required: false

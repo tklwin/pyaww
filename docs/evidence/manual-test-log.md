@@ -1,5 +1,9 @@
 # Gate 2 manual test log
 
+> Historical gate log (2026-10-17). It predates the Phase 4 panel rework;
+> the current UI is described in `../architecture.md`. Do not edit — append
+> a new log instead.
+
 Owner-run. For each app: hold **Right Option**, say a short Myanmar phrase,
 release — the text must paste at the cursor. Fill in ✅/❌ and notes.
 

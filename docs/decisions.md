@@ -4,6 +4,20 @@ One line per decision: what, why, when. Newest at the bottom.
 Decisions flagged **[OWNER]** are awaiting the owner's answer before they
 become final.
 
+Entries are append-only: supersede a decision with a new entry rather than
+rewriting the record.
+
+## Index
+
+- [Phase 0 (2026-10-16)](#phase-0-2026-10-16)
+- [Phase 1 (2026-10-16)](#phase-1-2026-10-16)
+- [Phase 2 (2026-10-17)](#phase-2-2026-10-17)
+- [Phase 3 (2026-10-17)](#phase-3-2026-10-17)
+- [Phase 4 (approved additions, 2026-10-17)](#phase-4-approved-additions-2026-10-17)
+- [Phase 4 close-out continued (2026-10-17)](#phase-4-close-out-continued-2026-10-17)
+- [Popover rework (2026-10-18)](#popover-rework-2026-10-18)
+- [Marketing site (2026-10-18)](#marketing-site-2026-10-18)
+
 ## Phase 0 (2026-10-16)
 
 - **Python 3.11 venv via `uv` at `.venv/` for analysis/parity tooling.**
@@ -166,7 +180,7 @@ become final.
 
 - **[OWNER] Phase 2 kickoff decisions.** Default hotkey: **Right Option**.
   Signing: create a local self-signed **"Pyaww Local"** code-signing
-  certificate (one-time guide in `docs/build.md`) so Microphone/Accessibility
+  certificate (one-time guide in `docs/build-release.md`) so Microphone/Accessibility
   grants survive rebuilds. Phase 1 pushed to `origin/main` (approved).
 - **App = SPM executable target `App/` + hand-assembled bundle**
   (`scripts/make-app.sh`): this machine has Command Line Tools only (no
@@ -219,7 +233,7 @@ become final.
 ## Phase 3 (2026-10-17)
 
 - **[OWNER] Gate 2 passed.** Owner ran the manual matrix in
-  `docs/manual-test-log.md`: paste ✅ and clipboard restore ✅ in Notes,
+  `docs/evidence/manual-test-log.md`: paste ✅ and clipboard restore ✅ in Notes,
   Safari, Chrome, VS Code, Terminal, Messages/Telegram; FR-1…FR-10 all ✅
   (FR-4 confirmed on retest). Two edge cases were unreachable by hand
   because transcription finished "too fast" — both are covered by unit
@@ -231,10 +245,10 @@ become final.
   ("Apple Development: thein.kyawlwin@icloud.com"), falling back to
   "Pyaww Local" then ad-hoc. Grants now persist across rebuilds; the switch
   from the previously ad-hoc bundle requires a one-time re-grant
-  (checklist in `docs/manual-test-log.md`).
+  (checklist in `docs/evidence/manual-test-log.md`).
 - **Compute units: keep `.all`** (benchmarked per SPEC 6.1, not assumed):
   27.5 ms p50 vs 58.5 ms cpuOnly vs 82.0 ms cpuAndNeuralEngine on a 4.95 s
-  clip. Numbers: `docs/performance.md`.
+  clip. Numbers: `docs/evidence/performance.md`.
 - **Memory bug found by the Phase 3 soak and fixed:** Core ML autoreleased
   objects accumulated ~4.7 MB per dictation (98.8 → 572.2 MB over 100
   clips) because the actor executor has no run-loop drain. Explicit
@@ -247,9 +261,9 @@ become final.
   175–187 MB (shared framework pages included) — owner confirms the
   reading when approving Gate 3.
 - **[OWNER] Gate 3 passed (2026-10-17).** Owner reviewed
-  `docs/performance.md` with "resident memory" = Activity Monitor footprint
+  `docs/evidence/performance.md` with "resident memory" = Activity Monitor footprint
   (77–88 MB idle; strict RSS 175–187 MB noted) and ticked the Phase 3
-  re-verify table in `docs/manual-test-log.md`: microphone + Accessibility
+  re-verify table in `docs/evidence/manual-test-log.md`: microphone + Accessibility
   grants after the signing switch, menu bar green, one dictation pasted,
   clean quit.
 
@@ -288,10 +302,10 @@ become final.
   `lexicons.json` and `Pyaww_PyawwCore.bundle` into the app. CLI gained
   `--segment` (defaults off so parity/quality scripts stay raw) and
   `--segment-text STRING`. Measured (release): init 19.3 ms once, longest
-  corpus text 3.8 ms — `docs/performance.md`. `swift test` = 17 core + 12
+  corpus text 3.8 ms — `docs/evidence/performance.md`. `swift test` = 17 core + 12
   app tests.
 - **[OWNER] Word segmentation verified in-app (2026-10-17).** Owner ticked
-  the Phase 4 table in `docs/manual-test-log.md`: word text pastes
+  the Phase 4 table in `docs/evidence/manual-test-log.md`: word text pastes
   ("မင်္ဂလာ ပါ" style), toggle off = raw syllable text, toggle on again,
   Settings → Model shows "Ready".
 - **Settings window comes to the front — final (2026-10-17, owner reports).**
@@ -309,7 +323,7 @@ become final.
   `SettingsWindow.activateApp()` → `openSettings()` → bounded retry raising
   the window; a belt repeats this in `SettingsView.onAppear`.
   **[OWNER] Verified (2026-10-17):** the window comes to the front on the
-  first click; re-verify table ticked in `docs/manual-test-log.md`.
+  first click; re-verify table ticked in `docs/evidence/manual-test-log.md`.
 - **Push approved + done (2026-10-17):** `e0398b4`, `9e972e8` and the
   Gate 3 / Settings-window commits are on `origin/main`.
 - **Settings fix pushed (2026-10-17):** after owner verification, `a97c499`
@@ -321,7 +335,7 @@ become final.
   unaffected (bundled model Apache-2.0 by freococo; mmdt-tokenizer port
   MIT by Myanmar Data Tech).
 - **[OWNER] "Pyaww" name check done (2026-10-17).** Agent-run collision
-  check, findings in `docs/name-check.md`: no active product with the
+  check, findings in `docs/evidence/name-check.md`: no active product with the
   name; the only exact-spelling software match is a dormant 2022 PyPI
   package unrelated to dictation; nearest live trademark is PAWW
   (class 009) — relevant only if Pyaww is ever released publicly. Name

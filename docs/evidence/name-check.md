@@ -1,5 +1,7 @@
 # "Pyaww" name check (2026-10-17)
 
+> Historical record (2026-10-17). Kept as evidence; not updated.
+
 Owner-requested collision check before Phase 4 (SPEC §1). Agent-run, best
 effort: web/GitHub/registry searches plus DNS and `whois` for the obvious
 domains. Trademark screening was via public USPTO records (Justia mirror) —

@@ -178,7 +178,7 @@ and 300-dictation soaks. Compute units stay `.all`: 27.5 ms p50 vs 58.5 ms
 `.cpuOnly` and 82.0 ms `.cpuAndNeuralEngine`. The soak caught a Core ML
 autorelease leak; `ModelRunner` now wraps each prediction in an
 `autoreleasepool` and memory plateaus (~107.5 MB). Evidence:
-`docs/performance.md`.
+`docs/evidence/performance.md`.
 
 **One panel, own status item (Phase 4).** The menu and the Settings window
 were retired: `MenuBarExtra(.window)` pinned its square window to the

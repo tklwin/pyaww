@@ -112,6 +112,19 @@ tccutil reset Microphone com.tklwin.pyaww
 tccutil reset Accessibility com.tklwin.pyaww
 ```
 
+## Beta and feedback
+
+Pyaww is at **v0.1.0 (beta)** — external test reports are welcome. The
+tester guide ([docs/beta.md](docs/beta.md)) lists the checks, known issues
+and what to include; report problems through
+[GitHub Issues](https://github.com/tklwin/pyaww/issues/new?template=bug_report.yml).
+
+## Documentation
+
+[docs/README.md](docs/README.md) is the map: as-built architecture, the
+decision log, build and release, beta testing, the model contract, and the
+website runbook.
+
 ## Website
 
 The bilingual landing page — <https://tklwin.github.io/pyaww/> — is

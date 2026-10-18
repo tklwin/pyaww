@@ -2,15 +2,15 @@
 
 *Spec-driven development brief for an AI coding agent. Version 1.0.*
 
-> **Status (2026-10-18):** v0.1.0, the first public beta, is shipped —
-> Phases 0–4 are complete with every gate passed; Phase 5 (notarization,
-> CI) was not taken. This file remains the original build brief; the
-> as-built record lives in `docs/decisions.md` and `docs/TODO.md`, and the
-> landing page is documented in `docs/website.md`.
+> **Status (2026-10-18): frozen.** This is the v1 build brief — the
+> contract that produced v0.1.0. It is kept for provenance and is not
+> updated again. Current behaviour: `docs/architecture.md`; open work:
+> `docs/todo.md`; decisions: `docs/decisions.md`; docs index:
+> `docs/README.md`.
 
 ## 0. How to use this document
 
-You are an AI coding agent building a small native macOS app. This document is the source of truth. Rules:
+You are an AI coding agent building the v1 app. This document was the source of truth for that build; it is now frozen (see the status note above). Rules:
 
 1. Read the whole document before writing code.
 2. Work **phase by phase** (Section 7). Do not start a phase until the previous phase's gate has passed.
@@ -253,7 +253,7 @@ This is where macOS permission rules bite. Evaluate and **document your choice**
 - Follow Swift API Design Guidelines. Add `///` doc comments on all public types and functions.
 - Add `swift-format` or SwiftLint configuration only if the owner approves a dev-time tool.
 - Commit in small, reviewable steps with clear messages. One logical change per commit.
-- No dead code, no commented-out blocks, no TODOs without an issue note in `docs/TODO.md`.
+- No dead code, no commented-out blocks, no TODOs without an issue note in `docs/todo.md`.
 
 ## 7. Delivery plan with gates
 
@@ -332,7 +332,7 @@ Provide one command to run everything (for example `swift test` and a `scripts/r
 
 ### 9.3 Manual app matrix (Phase 2 and 4)
 
-Test paste and Myanmar rendering in: Notes, Safari, Chrome, VS Code, Terminal, Telegram or Messages, Word or Pages. Record pass/fail and any rendering problems in `docs/manual-test-log.md`.
+Test paste and Myanmar rendering in: Notes, Safari, Chrome, VS Code, Terminal, Telegram or Messages, Word or Pages. Record pass/fail and any rendering problems in `docs/evidence/manual-test-log.md`.
 
 ### 9.4 Performance tests
 
@@ -350,14 +350,14 @@ Automated benchmark in the CLI: run N=50 inferences on 5 s audio, report median 
 - `docs/model-spec.md`: model I/O and front-end spec.
 - `docs/architecture.md`: the module diagram and data flow, kept current.
 - `docs/decisions.md`: short log of decisions (hotkey method, compute units, insertion method) with reasons.
-- `docs/manual-test-log.md` and the latest benchmark results.
+- `docs/evidence/manual-test-log.md` and the latest benchmark results.
 - `docs/website.md`: the landing page — hosting, copy rules, assets and
   the social card (added 2026-10-18).
 
 ## 12. Definition of done (v1)
 
 Shipped as v0.1.0 on 2026-10-18; the gate evidence is recorded in
-`docs/TODO.md`, `docs/performance.md` and `docs/manual-test-log.md`.
+`docs/todo.md`, `docs/evidence/performance.md` and `docs/evidence/manual-test-log.md`.
 
 - [ ] Parity gate passes on the full golden set with one command.
 - [ ] End-to-end dictation works in the full app matrix.

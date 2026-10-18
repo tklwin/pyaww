@@ -1,5 +1,8 @@
 # Phase 3 — performance and robustness (measured 2026-10-17)
 
+> Historical evidence (Phase 3, pre-panel). Kept as the Gate 3 record; a
+> new measurement belongs in a new file.
+
 All numbers measured on the owner's Mac (MacBook Air M2, 15", 8 GB,
 macOS 27.0.1) with the **release** build and the compiled-model cache warm
 (normal daily-use state). This file is the evidence for Gate 3 (SPEC §5.2).

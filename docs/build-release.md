@@ -1,10 +1,10 @@
-# Building and running Pyaww
+# Building, testing and releasing Pyaww
 
 ## Commands
 
 | Artifact | Command | Notes |
 | --- | --- | --- |
-| Tests | `scripts/test.sh` (or plain `swift test`) | 34 tests: 17 core (`PyawwCoreTests`) + 17 app (`PyawwAppTests`: 12 state + 5 menu bar icon) |
+| Tests | `scripts/test.sh` (or plain `swift test`) | 35 tests: 17 core (`PyawwCoreTests`) + 18 app (`PyawwAppTests`) |
 | CLI (WAV in, text out) | `swift build && .build/debug/pyaww-cli --model-dir Models clip.wav` | any AVFoundation-readable file, 0.5–30 s |
 | Menu bar app | `./scripts/make-app.sh` | release build → `build/Pyaww.app`, signed |
 | Gate 1 parity | `scripts/run-parity.sh` | one command: build, golden-set run, compare, CER |
@@ -45,12 +45,13 @@ First launch prompts:
 
 1. **Microphone** — macOS asks; click Allow.
 2. **Accessibility** — open System Settings → Privacy & Security →
-   Accessibility and enable Pyaww. (The menu bar menu has buttons with the
-   right deep links for both.)
+   Accessibility and enable Pyaww. (The panel has buttons with the right
+   deep links for both.)
 
 Usage: **hold Right Option**, speak, release — the text is pasted at the
-cursor. **Esc** cancels. The menu shows status, permission help,
-Settings…, and Quit.
+cursor. **Esc** cancels. Click the wave (left or right) for the panel:
+permissions, hotkey, durations, word segmentation, clipboard restore,
+sound cue, launch at login, model status, and Quit.
 
 ## Bundle layout
 
@@ -106,18 +107,48 @@ compiler, and no `SwiftUIMacros` plugin. Therefore:
 
 ## Releasing
 
-The version lives in `App/Info.plist` (`CFBundleShortVersionString`,
-`CFBundleVersion`). Bump it, add the `CHANGELOG.md` entry, then:
+Versioning is SemVer. Two places carry it:
 
-```sh
-./scripts/test.sh
-./scripts/make-app.sh
-./scripts/make-dmg.sh        # → dist/Pyaww-<version>-arm64.dmg
-git tag v<version>
-git push origin main v<version>
-gh release create v<version> dist/Pyaww-<version>-arm64.dmg \
-    --title "pyaww v<version>" --notes-file <release notes>
-```
+- `App/Info.plist` → `CFBundleShortVersionString` — the public version
+  (`0.1.0`), the tag name, and the release title.
+- `App/Info.plist` → `CFBundleVersion` — a monotonically increasing build
+  number (`1` today). Bump it for every uploaded build, even a rebuild of
+  the same public version.
+- `CHANGELOG.md` — the user-facing entry. Release notes are its matching
+  section plus the short install blurb and the website link.
+
+### Release checklist
+
+1. **Start clean:** `git status` clean; `git pull`.
+2. **Bump:** both version keys in `App/Info.plist`, plus `CHANGELOG.md`.
+3. **Tests:** `./scripts/test.sh` — all 35 green.
+4. **Parity** (only if the model or front-end changed):
+   `./scripts/run-parity.sh`.
+5. **Build:** `./scripts/make-app.sh`, then `./scripts/make-dmg.sh`
+   (→ `dist/Pyaww-<version>-arm64.dmg`).
+6. **Smoke-test the artifact as a user would:** copy the DMG to
+   `~/Downloads` (quarantined), open it, install, launch through
+   Gatekeeper, dictate once, then uninstall.
+7. **Hash:** `shasum -a 256 dist/Pyaww-<version>-arm64.dmg`.
+8. **Tag and publish:**
+
+   ```sh
+   git tag -a v<version> -m "pyaww v<version> (beta)"
+   git push origin main
+   git push origin v<version>
+   gh release create v<version> dist/Pyaww-<version>-arm64.dmg \
+       --title "pyaww v<version>" --notes-file <release-notes.md>
+   ```
+
+9. **Afterwards:** confirm the release's `latest` URL works, the README
+   still points to it, and the website install steps still match. The site
+   redeploys only when `site/**` changes — releasing the app does not
+   touch it.
+
+Do **not** commit `dist/` (gitignored). Do **not** change the signing
+identity between builds: macOS resets the Microphone and Accessibility
+grants when it changes. Never replace an uploaded artifact under the same
+public version — bump `CFBundleVersion` and rebuild.
 
 On macOS 26 the styling step's AppleScript `set bounds` can lose a race
 with Finder and the saved window ends up larger than the 600×400
@@ -127,7 +158,7 @@ saved `.DS_Store` (window 600×400, item row on the arrow line) before
 compression. If the patcher prints an `✗`, it failed on purpose — do not
 ship that image.
 
-Release notes are the matching `CHANGELOG.md` section plus the short
-install blurb. Distribution is intentionally not notarized (free project,
-no Apple Developer Program subscription) — `README.md`'s install section
-is the user-facing side of that decision.
+Distribution is intentionally not notarized (free project, no Apple
+Developer Program subscription) — `README.md`'s install section is the
+user-facing side of that decision. Beta reports are handled per
+`beta.md`.
